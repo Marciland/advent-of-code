@@ -1,6 +1,8 @@
 '''https://adventofcode.com/2023/day/1'''
 import os
 
+from helpers import get_sum
+
 day1_input = os.path.join(os.getcwd(), 'day1.txt')
 written_numbers = ['one', 'two', 'three', 'four',
                    'five', 'six', 'seven', 'eight', 'nine']
@@ -30,14 +32,6 @@ def get_numbers(text_input: list[str]) -> list[int]:
 
 
 assert get_numbers(['12383ajhlskgdhaodz12zghbvfdu6234jhl12213']) == [13]
-
-
-def get_sum(numbers: list[int]) -> int:
-    '''sums up the list of numbers'''
-    result_sum = 0
-    for number in numbers:
-        result_sum += number
-    return result_sum
 
 
 assert get_sum([15, 12, 33, 54]) == 15+12+33+54
