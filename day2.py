@@ -62,4 +62,41 @@ def get_valid_game_ids(games: dict[int, list[dict]]) -> list[int]:
     return valid_games
 
 
+def find_fewest_necessary(game_sets: list[dict]) -> dict:
+    '''returns the fewest necessary for a game (game_sets of a game)'''
+    highest_red = 0
+    highest_green = 0
+    highest_blue = 0
+    for game_set in game_sets:
+        for color, amount in game_set.items():
+            if color == 'red' and highest_red < amount:
+                highest_red = amount
+            if color == 'green' and highest_green < amount:
+                highest_green = amount
+            if color == 'blue' and highest_blue < amount:
+                highest_blue = amount
+    return {'red': highest_red, 'green': highest_green, 'blue': highest_blue}
+
+
+def get_fewest_cubes(games: dict[int, list[dict]]) -> list[dict]:
+    '''gets the fewest necessary cubes for each game'''
+    fewest_cubes = []
+    for _, game_sets in games.items():
+        test = find_fewest_necessary(game_sets)
+        fewest_cubes.append(test)
+    return fewest_cubes
+
+
+def get_powers(games: list[dict]) -> list[int]:
+    '''multiply red*green*blue for each game'''
+    powers = []
+    for game in games:
+        power = 1
+        for _, amount in game.items():
+            power = power * amount
+        powers.append(power)
+    return powers
+
+
 print(get_sum(get_valid_game_ids(read_input())))  # part one
+print(get_sum(get_powers(get_fewest_cubes(read_input()))))  # part two
