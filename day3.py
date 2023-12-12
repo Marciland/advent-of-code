@@ -40,26 +40,39 @@ def has_symbol(previous_line: str | None, next_line: str | None, current_line: s
             for radius in range(len(number)+1):
                 if previous_line[start_index+radius] != '.' and not previous_line[start_index+radius].isdigit():
                     return True
-        if start_index + len(number) == len(current_line):
+        elif start_index + len(number) == len(current_line):
             for radius in range(-1, len(number)):
                 if previous_line[start_index+radius] != '.' and not previous_line[start_index+radius].isdigit():
                     return True
-        for radius in range(-1, len(number)+1):
-            if previous_line[start_index+radius] != '.' and not previous_line[start_index+radius].isdigit():
-                return True
+        else:
+            for radius in range(-1, len(number)+1):
+                if previous_line[start_index+radius] != '.' and not previous_line[start_index+radius].isdigit():
+                    return True
     if next_line:
         if start_index == 0:
             for radius in range(len(number)+1):
                 if next_line[start_index+radius] != '.' and not next_line[start_index+radius].isdigit():
                     return True
-        if start_index + len(number) == len(current_line):
+        elif start_index + len(number) == len(current_line):
             for radius in range(-1, len(number)):
                 if next_line[start_index+radius] != '.' and not next_line[start_index+radius].isdigit():
                     return True
-        for radius in range(-1, len(number)+1):
-            if next_line[start_index+radius] != '.' and not next_line[start_index+radius].isdigit():
+        else:
+            for radius in range(-1, len(number)+1):
+                if next_line[start_index+radius] != '.' and not next_line[start_index+radius].isdigit():
+                    return True
+    if start_index == 0:
+        for radius in range(len(number)+1):
+            if current_line[start_index+radius] != '.' and not current_line[start_index+radius].isdigit():
                 return True
-    # check current line
+    elif start_index + len(number) == len(current_line):
+        for radius in range(-1, len(number)):
+            if current_line[start_index+radius] != '.' and not current_line[start_index+radius].isdigit():
+                return True
+    else:
+        for radius in range(-1, len(number)+1):
+            if current_line[start_index+radius] != '.' and not current_line[start_index+radius].isdigit():
+                return True
     return False
 
 
@@ -76,15 +89,20 @@ def get_part_numbers(lines: list[str]) -> list[int]:
             for start_index, number in nums_with_index[index].items():
                 if has_symbol(previous_line, next_line, lines[index], start_index, number):
                     part_numbers.append(int(number))
+            continue
         if index == len(lines)-1:
             previous_line = lines[index-1]
             next_line = None
             for start_index, number in nums_with_index[index].items():
                 if has_symbol(previous_line, next_line, lines[index], start_index, number):
                     part_numbers.append(int(number))
-        # all the other lines between
+            continue
+        previous_line = lines[index-1]
+        next_line = lines[index+1]
+        for start_index, number in nums_with_index[index].items():
+            if has_symbol(previous_line, next_line, lines[index], start_index, number):
+                part_numbers.append(int(number))
     return part_numbers
 
 
-print(get_part_numbers(read_input()))
-# print(get_sum(get_part_numbers(read_input())))  # part one
+print(get_sum(get_part_numbers(read_input())))  # part one
