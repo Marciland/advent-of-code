@@ -38,4 +38,18 @@ def get_points_per_card(cards: list) -> list[int]:
     return points_per_card
 
 
+def get_cards_total(cards: list) -> list[int]:
+    '''increase amount (weight) of cards at card indexes of matches'''
+    amount_of_cards = [1 for _ in range(len(cards))]
+    for index in range(0, len(cards), 1):
+        matches = 0
+        for number in cards[index][1]:
+            if number in cards[index][0]:
+                matches += 1
+        for i in range(1, matches+1, 1):
+            amount_of_cards[index+i] += amount_of_cards[index]
+    return amount_of_cards
+
+
 print(get_sum(get_points_per_card(read_input())))  # part one
+print(get_sum(get_cards_total(read_input())))  # part two
