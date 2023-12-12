@@ -3,7 +3,7 @@ import os
 
 from helpers import get_sum
 
-day1_input = os.path.join(os.getcwd(), 'day2.txt')
+day2_input = os.path.join(os.getcwd(), 'day2.txt')
 MAX_RED = 12
 MAX_GREEN = 13
 MAX_BLUE = 14
@@ -12,7 +12,7 @@ MAX_BLUE = 14
 def read_input() -> dict[int, list[dict]]:
     '''formats the day2.txt'''
     games_dict = {}
-    with open(day1_input, 'r', encoding='utf-8') as file_handle:
+    with open(day2_input, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     for line in file_content:
         game_sets = []
