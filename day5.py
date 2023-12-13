@@ -1,10 +1,12 @@
 '''https://adventofcode.com/2023/day/5'''
+import multiprocessing
 import os
+import threading
 
 day5_input = os.path.join(os.getcwd(), 'day5.txt')
 
 
-def read_input() -> tuple[list[str], list[list[dict]]]:
+def read_input() -> tuple[list[int], list[list[dict]]]:
     '''formats the day5.txt'''
     with open(day5_input, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
@@ -126,5 +128,87 @@ def get_lowest_location(seeds: list[str], maps: list[list[dict]]) -> int:
     return lowest_location
 
 
-seed_list, map_list = read_input()
-print(get_lowest_location(seed_list, map_list))  # part one
+def convert_seed_list_brute(read_list: list[int]) -> list[int]:
+    '''
+    BRUTEFORCE!!!!
+    for part 2, create a full list of all seeds
+    '''
+    start_points = []
+    ranges = []
+    for index in range(0, len(read_list), 1):
+        if index % 2 == 0:
+            start_points.append(read_list[index])
+            continue
+        ranges.append(read_list[index])
+    seeds = []
+    for index in range(0, len(start_points), 1):
+        for i in range(0, ranges[index], 1):
+            seeds.append(start_points[index]+i)
+    return seeds
+
+
+def convert_seed_list_single(seed: int, length: int) -> list[int]:
+    '''
+    BRUTEFORCE!!!!
+    for part 2, create a full list for single seed with range
+    '''
+    seeds = []
+    for i in range(0, length, 1):
+        seeds.append(seed+i)
+    return seeds
+
+
+def convert_seed_list_single_threaded(seed: int, length: int) -> list[int]:
+    '''
+    BRUTEFORCE!!!!
+    for part 2, create a full list for single seed with range
+    '''
+    seeds = []
+    # what if i lost one value due to integer division?
+    middle = length//2
+    thread1 = threading.Thread(target=threaded_append,
+                               args=(seed, middle, seeds))
+    thread2 = threading.Thread(target=threaded_append,
+                               args=(seed+middle, middle, seeds))
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
+    return seeds
+
+
+def threaded_append(seeds: list, seed: int, length: int):
+    for i in range(0, length, 1):
+        seeds.append(seed+i)
+
+
+def get_lowest_single(seed: int, length: int, maps: list[list[dict]], lowest: list):
+    '''FOR BRUTEFORCING PART TWO'''
+    full_seeds = convert_seed_list_single(seed, length)
+    lowest.append(get_lowest_location(full_seeds, maps))
+
+
+if __name__ == '__main__':
+    seed_list, map_list = read_input()
+    # part one without bruteforcing
+    print(get_lowest_location(seed_list, map_list))
+    # part two
+    # BRUTEFORCE!!!!
+    # Using multiprocessing and multithreading!!!!
+    manager = multiprocessing.Manager()
+    locations = manager.list()
+    processes = []
+    for index in range(0, len(seed_list), 2):
+        process = multiprocessing.Process(target=get_lowest_single,
+                                          args=(seed_list[index], seed_list[index+1], map_list, locations))
+        processes.append(process)
+        process.start()
+    for process in processes:
+        process.join()
+    LOWEST_LOCATION = -1
+    for location_number in locations:
+        if LOWEST_LOCATION == -1:
+            LOWEST_LOCATION = location_number
+        if location_number < LOWEST_LOCATION:
+            LOWEST_LOCATION = location_number
+    print(LOWEST_LOCATION)
