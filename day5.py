@@ -2,7 +2,7 @@
 import multiprocessing
 import os
 import threading
-
+import time
 day5_input = os.path.join(os.getcwd(), 'day5.txt')
 
 
@@ -37,6 +37,47 @@ def read_input() -> tuple[list[int], list[list[dict]]]:
         basic_maps.append(basic_map)
     return seeds, basic_maps
 
+
+def get_lowest_location(seeds: list[str], maps: list[list[dict]]) -> int:
+    '''
+    - convert seeds to locaton using all maps
+    - return lowest location
+    - would not work with negative values in range_len
+    '''
+    location_numbers = []
+    for seed in seeds:
+        # start at seed
+        current_value = seed
+        for _map in maps:
+            # reset next
+            next_value = None
+            for entry in _map:
+                dst, src, range_len = entry.items()
+                # update next on match
+                if current_value >= src[1] and current_value <= src[1]+range_len[1]:
+                    diff = dst[1] - src[1]
+                    next_value = current_value + diff
+                    break
+            # keep value of not matched
+            current_value = next_value or current_value
+        # last current_value is the location number
+        location_numbers.append(current_value)
+    lowest_location = -1
+    for location_number in location_numbers:
+        if lowest_location == -1:
+            lowest_location = location_number
+        if location_number < lowest_location:
+            lowest_location = location_number
+    return lowest_location
+
+# part one
+seeds_list, map_list = read_input()
+print('part one:', get_lowest_location(seeds_list, map_list))
+# part two
+map_list.reverse()
+# for lowest location numbers in last map, try to hit a seed
+
+# BRUTEFORCING BELOW:
 
 def generate_conversion_table(basic_map: list[dict]) -> list[tuple[int, int]]:
     '''
@@ -95,39 +136,6 @@ def get_lowest_location_brute(seeds: list[str], maps: list[list[dict]]) -> int:
     return lowest_location
 
 
-def get_lowest_location(seeds: list[str], maps: list[list[dict]]) -> int:
-    '''
-    - convert seeds to locaton using all maps
-    - return lowest location
-    - would not work with negative values in range_len
-    '''
-    location_numbers = []
-    for seed in seeds:
-        # start at seed
-        current_value = seed
-        for _map in maps:
-            # reset next
-            next_value = None
-            for entry in _map:
-                dst, src, range_len = entry.items()
-                # update next on match
-                if current_value >= src[1] and current_value <= src[1]+range_len[1]:
-                    diff = dst[1] - src[1]
-                    next_value = current_value + diff
-                    break
-            # keep value of not matched
-            current_value = next_value or current_value
-        # last current_value is the location number
-        location_numbers.append(current_value)
-    lowest_location = -1
-    for location_number in location_numbers:
-        if lowest_location == -1:
-            lowest_location = location_number
-        if location_number < lowest_location:
-            lowest_location = location_number
-    return lowest_location
-
-
 def convert_seed_list_brute(read_list: list[int]) -> list[int]:
     '''
     BRUTEFORCE!!!!
@@ -155,6 +163,7 @@ def convert_seed_list_single(seed: int, length: int) -> list[int]:
     seeds = []
     for i in range(0, length, 1):
         seeds.append(seed+i)
+        print('found:', seed+i)
     return seeds
 
 
@@ -184,14 +193,18 @@ def threaded_append(seeds: list, seed: int, length: int):
 
 def get_lowest_single(seed: int, length: int, maps: list[list[dict]], lowest: list):
     '''FOR BRUTEFORCING PART TWO'''
+    print('looking for seed:', seed)
+    print('searching in range:', length)
+    time.sleep(1)
     full_seeds = convert_seed_list_single(seed, length)
     lowest.append(get_lowest_location(full_seeds, maps))
 
 
+'''
 if __name__ == '__main__':
     seed_list, map_list = read_input()
     # part one without bruteforcing
-    print(get_lowest_location(seed_list, map_list))
+    # print(get_lowest_location(seed_list, map_list))
     # part two
     # BRUTEFORCE!!!!
     # Using multiprocessing and multithreading!!!!
@@ -212,3 +225,4 @@ if __name__ == '__main__':
         if location_number < LOWEST_LOCATION:
             LOWEST_LOCATION = location_number
     print(LOWEST_LOCATION)
+'''
