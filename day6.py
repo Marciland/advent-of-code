@@ -20,6 +20,19 @@ def read_input() -> list[tuple[int, int]]:
     return races
 
 
+def read_input_two() -> list[tuple[int, int]]:
+    '''formats the day6.txt'''
+    with open(day6_input, 'r', encoding='utf-8') as file_handle:
+        file_content = file_handle.readlines()
+    times = [time.strip() for time in file_content[0].split(' ')
+             if time.strip().isnumeric()]
+    distances = [distance.strip() for distance in file_content[1].split(' ')
+                 if distance.strip().isnumeric()]
+    time = int(''.join(times))
+    distance = int(''.join(distances))
+    return [(time, distance)]
+
+
 def get_possibilities(races: list[tuple[int, int]]) -> list[int]:
     '''
     speed = time button pressed
@@ -47,3 +60,5 @@ def get_possibilities(races: list[tuple[int, int]]) -> list[int]:
 
 # part one
 print(get_product(get_possibilities(read_input())))
+# part two
+print(get_product(get_possibilities(read_input_two())))
