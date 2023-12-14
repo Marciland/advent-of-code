@@ -89,7 +89,7 @@ def hand_is_better(hand, sorted_hand) -> bool:
     True if hand is better than sorted hand.
     compare the first card -> compare the second ... etc
     '''
-    for index in range(0, len(hand), 1):
+    for index in range(0, len(hand[0]), 1):
         # compare next if they are the same
         if hand[0][index] == sorted_hand[0][index]:
             continue
@@ -125,7 +125,6 @@ def order_power(power):
         if len(sorted_hands) == len(power):
             break
         for hand in power:
-            inserted = False
             # do not add hands twice
             if hand in sorted_hands:
                 continue
@@ -133,27 +132,27 @@ def order_power(power):
             if not sorted_hands:
                 sorted_hands.append(hand)
                 continue
+            index = None
             for sorted_hand in sorted_hands:
+                # expect all hands to be unique
                 if sorted_hand == hand:
                     continue
                 # compare first card, then second, etc
                 if hand_is_better(hand, sorted_hand):
-                    # expect all hands to be unique
-                    index = sorted_hands.index(sorted_hand)
-                    # +1 because better has higher index
-                    sorted_hands.insert(index+1, hand)
-                    inserted = True
-                    # only works if a worse card is found in sorted_hand
-                    break
-            if not inserted:
+                    new_index = sorted_hands.index(sorted_hand)
+                    if not index:
+                        index = new_index
+                        continue
+                    if new_index > index:
+                        index = new_index
+            if index is None:
                 # insert at first index if hand is the worst
                 sorted_hands.insert(0, hand)
+            else:
+                # +1 because better has higher index
+                sorted_hands.insert(index+1, hand)
     return sorted_hands
 
-# TODO! do not insert after a hand that is worse than the hand we want to insert
-# keep the index and find the highest index of a worse hand
-# insert as high as possible
-# instead of if not inserted, use if index is None to insert the worst hand
 
 def get_ranks(hands: list[tuple[str, int, int]]) -> list[int]:
     '''
