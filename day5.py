@@ -74,8 +74,7 @@ def get_lowest_location(seeds: list[str], maps: list[list[dict]]) -> int:
 seeds_list, map_list = read_input()
 print('part one:', get_lowest_location(seeds_list, map_list))
 # part two
-map_list.reverse()
-# for lowest location numbers in last map, try to hit a seed
+# for range of location match up to a seed range
 
 # BRUTEFORCING BELOW:
 
