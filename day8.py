@@ -59,39 +59,63 @@ def find_location(location: str, nodes: list, instruction: str):
             return node[1] if instruction == 'L' else node[2]
 
 
-def navigate_network_two(instructions, nodes) -> int:
+def calc_steps(location, instructions, nodes, steps: list):
+    '''get range from start to end'''
+    step = 0
+    while True:
+        for instruction in instructions:
+            location = find_location(location, nodes, instruction)
+            step += 1
+            if is_end_node(location):
+                steps.append(step)
+                return
+
+
+def calc_kgv(number1, number2):
+    a = number1
+    b = number2
+    if number1 < number2:
+        temp = number1
+        number1 = number2
+        number2 = temp
+    rest = number1 % number2
+    while rest != 0:
+        number1 = number2
+        number2 = rest
+        rest = number1 % number2
+    return a*b//number2
+
+
+def navigate_network_multi(instructions, nodes):
     '''
-    start at all nodes with locations ending in A
-    navigate with the instructions through nodes simultaneously
-    stop when all nodes reached a location ending with Z
-    return steps taken
+    pregenerate a list of steps to an end node for each starting location
+    find the smallest match for all starting locations
     '''
+    import multiprocessing
     starting_locations = []
     for node in nodes:
         if is_start_node(node[0]):
             starting_locations.append(node[0])
-    temp_list = starting_locations.copy()
-    steps = 0
-    while True:
-        for instruction in instructions:
-            hits = 0
-            # return steps if all nodes hit the end at the same time (hits = amount of nodes)
-            if hits == len(starting_locations):
-                return steps
-            # do not increase hits, instead set to hits each instruction
-            for location in starting_locations:
-                temp_list.remove(location)
-                next_location = find_location(location, nodes, instruction)
-                if is_end_node(next_location):
-                    hits += 1
-                temp_list.append(next_location)
-            starting_locations = temp_list.copy()
-            # increase each instruction anyways
-            steps += 1
+    steps = multiprocessing.Manager().list()
+    processes = []
+    for location in starting_locations:
+        process = multiprocessing.Process(
+            target=calc_steps, args=(location, instructions, nodes, steps))
+        processes.append(process)
+        process.start()
+    for process in processes:
+        process.join()
+    return calc_kgv(calc_kgv(steps[0],
+                             calc_kgv(steps[1],
+                                      steps[2])),
+                    calc_kgv(steps[3],
+                             calc_kgv(steps[4],
+                                      steps[5])))
 
 
-list_of_instructions, list_of_nodes = read_input()
-# part one
-print(navigate_network(list_of_instructions, list_of_nodes))
-# part two
-print(navigate_network_two(list_of_instructions, list_of_nodes))
+if __name__ == '__main__':
+    list_of_instructions, list_of_nodes = read_input()
+    # part one
+    print(navigate_network(list_of_instructions, list_of_nodes))
+    # part two
+    print(navigate_network_multi(list_of_instructions, list_of_nodes))
