@@ -67,6 +67,18 @@ def predict_next(history: list[int]) -> int:
     return differences[-1][-1]
 
 
+def predict_previous(history: list[int]) -> int:
+    '''predict new first entry : result = value_below - value above'''
+    differences = generate_differences(history)
+    differences.reverse()
+    for index in range(1, len(differences)-1, 1):
+        x = differences[index][0]
+        y = differences[index+1][0]
+        differences[index+1].insert(0, y-x)
+    # based on the first value of the last list
+    return differences[-1][0]
+
+
 if __name__ == '__main__':
     # part one
     list_of_histories = read_input()
@@ -74,4 +86,9 @@ if __name__ == '__main__':
     for list_of_numbers in list_of_histories:
         next_values.append(predict_next(list_of_numbers))
     print(get_sum(next_values))
-    # expect 114 for the test input
+    # part two
+    list_of_histories = read_input()
+    previous_values = []
+    for list_of_numbers in list_of_histories:
+        previous_values.append(predict_previous(list_of_numbers))
+    print(get_sum(previous_values))
