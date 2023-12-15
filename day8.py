@@ -22,17 +22,29 @@ def read_input() -> tuple[list[str], list[tuple[str, str, str]]]:
         network.append((location, left_instruction, right_instruction))
     return instructions, network
 
-# loop while not at ZZZ, if node[0] in network == 'ZZZ'
-# count steps
-# if 'L' go to node[0] in network == current_node[1]
-# if 'R' go to node[0] in network == current_node[2]
+
+def navigate_network(instructions, nodes) -> int:
+    '''
+    start at AAA
+    navigate with the instructions through nodes
+    stop when ZZZ is reached
+    return steps taken
+    '''
+    start = 'AAA'
+    end = 'ZZZ'
+    steps = 0
+    current_location = start
+    while True:
+        for instruction in instructions:
+            if current_location == end:
+                return steps
+            for node in nodes:
+                if node[0] == current_location:
+                    current_location = node[1] if instruction == 'L' else node[2]
+                    steps += 1
+                    break
 
 
-'''
-Starting with AAA, you need to look up the next element based on the next left/right instruction in your input
-If you run out of left/right instructions, repeat the whole sequence of instructions as necessary: RL really means RLRLRLRLRLRLRLRL...
-Starting at AAA, follow the left/right instructions. How many steps are required to reach ZZZ?
-'''
 list_of_instructions, list_of_nodes = read_input()
 # part one
-print('')
+print(navigate_network(list_of_instructions, list_of_nodes))
