@@ -19,20 +19,59 @@ day9_input = os.path.join(os.getcwd(), 'day9.txt')
 
 def read_input() -> list[list[int]]:
     '''formats the day9.txt'''
-    return []
+    with open(day9_input, 'r', encoding='utf-8') as file_handle:
+        file_content = file_handle.readlines()
+    histories = []
+    for line in file_content:
+        history = []
+        for number in line.split(' '):
+            history.append(int(number.strip()))
+        histories.append(history)
+    return histories
 
-# for list in input:
-# create list to keep difference between each entry
-# continue until all entries are 0
-#
-# reverse newly created lists
-# for list in new lists:
-# predict new last entry : result = value_before + value_below (value above if reversed)
-# based on the last value of the last list -> predict new value for input list in list, append to new result list
-# sum result list
+
+def only_zero(lis: list) -> bool:
+    '''if all entries in lis are 0 return True'''
+    return lis.count(0) == len(lis)
+
+
+def generate_differences(history: list[int]) -> list[list[int]]:
+    '''
+    create a pyramid (list of lists) that contains the differences
+    0   3   6   9  12  15
+      3   3   3   3   3
+        0   0   0   0
+    '''
+    pyramid = []
+    pyramid.append(history)
+    while True:
+        # if all values at the last index are 0
+        if only_zero(pyramid[-1]):
+            break
+        differences = []
+        for index in range(0, len(pyramid[-1])-1, 1):
+            differences.append(pyramid[-1][index+1] - pyramid[-1][index])
+        pyramid.append(differences)
+    return pyramid
+
+
+def predict_next(history: list[int]) -> int:
+    '''predict new last entry : result = value_before + value_below (value above if reversed)'''
+    differences = generate_differences(history)
+    differences.reverse()
+    for index in range(1, len(differences)-1, 1):
+        x = differences[index][-1]
+        y = differences[index+1][-1]
+        differences[index+1].append(x+y)
+    # based on the last value of the last list
+    return differences[-1][-1]
 
 
 if __name__ == '__main__':
     # part one
-    print(get_sum(read_input()))
+    list_of_histories = read_input()
+    next_values = []
+    for list_of_numbers in list_of_histories:
+        next_values.append(predict_next(list_of_numbers))
+    print(get_sum(next_values))
     # expect 114 for the test input
