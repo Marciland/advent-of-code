@@ -71,22 +71,20 @@ def navigate_network_two(instructions, nodes) -> int:
         if is_start_node(node[0]):
             starting_locations.append(node[0])
     temp_list = starting_locations.copy()
-    hits = 0
     steps = 0
     while True:
         for instruction in instructions:
+            hits = 0
             # return steps if all nodes hit the end at the same time (hits = amount of nodes)
             if hits == len(starting_locations):
                 return steps
             # do not increase hits, instead set to hits each instruction
-            current_hits = 0
             for location in starting_locations:
                 temp_list.remove(location)
                 next_location = find_location(location, nodes, instruction)
                 if is_end_node(next_location):
-                    current_hits += 1
+                    hits += 1
                 temp_list.append(next_location)
-            hits = current_hits
             starting_locations = temp_list.copy()
             # increase each instruction anyways
             steps += 1
