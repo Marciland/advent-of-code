@@ -1,4 +1,5 @@
 '''general functions'''
+from dataclasses import dataclass
 
 
 def get_sum(numbers: list[int]) -> int:
@@ -15,3 +16,10 @@ def get_product(numbers: list[int]) -> int:
     for number in numbers:
         result *= number
     return result
+
+
+@dataclass
+class Point:
+    '''2D point'''
+    x: int
+    y: int

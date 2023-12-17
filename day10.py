@@ -36,6 +36,8 @@ to the point farthest from the starting position?
 '''
 import os
 
+from helpers import Point
+
 day10_input = os.path.join(os.getcwd(), 'day10.txt')
 
 
@@ -49,26 +51,25 @@ def read_input() -> list[list[str]]:
     return lines
 
 
-def find_start(lines: list) -> tuple[int, int] | None:
+def find_start(lines: list) -> Point | None:
     '''search the start point'''
     for y_index in range(0, len(lines), 1):
         if 'S' in lines[y_index]:
             for x_index in range(0, len(lines[y_index]), 1):
                 if lines[y_index][x_index] == 'S':
-                    return (y_index, x_index)
+                    return Point(y=y_index, x=x_index)
     return None
 
 
 def find_possible_steps(field: list[list[str]],
-                        current_point: tuple[int, int]) -> tuple[tuple[int, int],
-                                                                 tuple[int, int]]:
+                        current_point: Point) -> tuple[Point, Point]:
     '''finds the next steps'''
     possible_steps = []
     can_go_left = False
     can_go_right = False
     can_go_above = False
     can_go_below = False
-    current_symbol = field[current_point[0]][current_point[1]]
+    current_symbol = field[current_point.y][current_point.x]
     match (current_symbol):
         case '|':
             can_go_left = False
@@ -101,8 +102,8 @@ def find_possible_steps(field: list[list[str]],
             can_go_above = False
             can_go_below = True
         case 'S':
-            if current_point[1] != 0:
-                left = field[current_point[0]][current_point[1]-1]
+            if current_point.x != 0:
+                left = field[current_point.y][current_point.x-1]
                 match(left):
                     case '|':
                         can_go_left = False
@@ -120,8 +121,8 @@ def find_possible_steps(field: list[list[str]],
                         can_go_left = False
                     case 'S':
                         can_go_left = True
-            if current_point[1] != len(field[1])-1:
-                right = field[current_point[0]][current_point[1]+1]
+            if current_point.x != len(field[1])-1:
+                right = field[current_point.y][current_point.x+1]
                 match(right):
                     case '|':
                         can_go_right = False
@@ -139,8 +140,8 @@ def find_possible_steps(field: list[list[str]],
                         can_go_right = False
                     case 'S':
                         can_go_right = True
-            if current_point[1] != len(field[0])-1:
-                above = field[current_point[0]-1][current_point[1]]
+            if current_point.x != len(field[0])-1:
+                above = field[current_point.y-1][current_point.x]
                 match(above):
                     case '|':
                         can_go_above = True
@@ -158,8 +159,8 @@ def find_possible_steps(field: list[list[str]],
                         can_go_above = False
                     case 'S':
                         can_go_above = True
-            if current_point[0] != 0:
-                below = field[current_point[0]+1][current_point[1]]
+            if current_point.y != 0:
+                below = field[current_point.y+1][current_point.x]
                 match(below):
                     case '|':
                         can_go_below = True
@@ -178,17 +179,17 @@ def find_possible_steps(field: list[list[str]],
                     case 'S':
                         can_go_below = True
     if can_go_left:
-        possible_steps.append((current_point[0], current_point[1]-1))
+        possible_steps.append(Point(y=current_point.y, x=current_point.x-1))
     if can_go_right:
-        possible_steps.append((current_point[0], current_point[1]+1))
+        possible_steps.append(Point(y=current_point.y, x=current_point.x+1))
     if can_go_above:
-        possible_steps.append((current_point[0]-1, current_point[1]))
+        possible_steps.append(Point(y=current_point.y-1, x=current_point.x))
     if can_go_below:
-        possible_steps.append((current_point[0]+1, current_point[1]))
+        possible_steps.append(Point(y=current_point.y+1, x=current_point.x))
     return (possible_steps[0], possible_steps[1])
 
 
-def walk_the_roehre(field: list[list[str]], start_point: tuple[int, int]) -> int:
+def walk_the_roehre(field: list[list[str]], start_point: Point) -> int:
     '''walk the pipe from start to start'''
     steps = 0
     possible_step1, _ = find_possible_steps(field, start_point)
