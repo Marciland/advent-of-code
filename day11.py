@@ -22,6 +22,7 @@ between every pair of galaxies.
 What is the sum of these lengths?
 '''
 import os
+import copy
 
 from helpers import get_sum, Point
 
@@ -38,6 +39,40 @@ def read_input() -> list[list[str]]:
     return lines
 
 
+def expand_rows(universe: list[list[str]]):
+    '''check which rows to expand'''
+    temp = copy.deepcopy(universe)
+    inserted = 0
+    for y_index in range(0, len(temp), 1):
+        expand = True
+        for char in temp[y_index]:
+            if char == '#':
+                expand = False
+                break
+        if expand:
+            universe.insert(y_index+inserted, temp[y_index])
+            inserted += 1
+
+
+def expand_cols(universe: list[list[str]]):
+    '''check which cols to expand'''
+    temp = copy.deepcopy(universe)
+    x_index = 0
+    inserted = 0
+    while True:
+        if x_index == len(temp[0]):
+            break
+        expand = True
+        for row in temp:
+            if row[x_index] == '#':
+                expand = False
+        if expand:
+            for row in universe:
+                row.insert(x_index + inserted, row[x_index+inserted])
+            inserted += 1
+        x_index += 1
+
+
 def expand_universe(universe: list[list[str]]):
     '''
     expands the universe
@@ -45,6 +80,8 @@ def expand_universe(universe: list[list[str]]):
     any rows or columns that contain no galaxies
     should all actually be twice as big
     '''
+    expand_rows(universe)
+    expand_cols(universe)
 
 
 def get_galaxy_pairs(universe: list[list[str]]) -> list[tuple[Point, Point]]:
