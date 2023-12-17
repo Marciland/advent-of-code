@@ -84,9 +84,20 @@ def expand_universe(universe: list[list[str]]):
     expand_cols(universe)
 
 
+def get_galaxies(universe: list[list[str]]) -> list[Point]:
+    '''returns a list of galaxies'''
+    galaxies = []
+    for y_index in range(0, len(universe), 1):
+        for x_index in range(0, len(universe[y_index]), 1):
+            if universe[y_index][x_index] == '#':
+                galaxies.append(Point(x=x_index, y=y_index))
+    return galaxies
+
+
 def get_galaxy_pairs(universe: list[list[str]]) -> list[tuple[Point, Point]]:
     '''returns a list of pairs'''
-    return (Point(x=1, y=2), Point(x=1, y=2))
+    galaxies = get_galaxies(universe)
+    return [(Point(x=1, y=2), Point(x=1, y=2))]
 
 
 def get_shortest_path(pair: tuple[Point, Point]):
