@@ -28,6 +28,7 @@ from itertools import combinations
 from helpers import Point, get_sum
 
 day11_input = os.path.join(os.getcwd(), 'day11.txt')
+EXPAND = 1000000
 
 
 def read_input() -> list[list[str]]:
@@ -55,6 +56,20 @@ def expand_rows(universe: list[list[str]]):
             inserted += 1
 
 
+def expand_rows_theory(universe: list[list[str]]) -> list[int]:
+    '''check which rows to expand'''
+    expanding_rows = []
+    for y_index in range(0, len(universe), 1):
+        expand = True
+        for char in universe[y_index]:
+            if char == '#':
+                expand = False
+                break
+        if expand:
+            expanding_rows.append(y_index)
+    return expanding_rows
+
+
 def expand_cols(universe: list[list[str]]):
     '''check which cols to expand'''
     temp = copy.deepcopy(universe)
@@ -74,6 +89,23 @@ def expand_cols(universe: list[list[str]]):
         x_index += 1
 
 
+def expand_cols_theory(universe: list[list[str]]) -> list[int]:
+    '''check which cols to expand'''
+    expanding_columns = []
+    x_index = 0
+    while True:
+        if x_index == len(universe[0]):
+            break
+        expand = True
+        for row in universe:
+            if row[x_index] == '#':
+                expand = False
+        if expand:
+            expanding_columns.append(x_index)
+        x_index += 1
+    return expanding_columns
+
+
 def expand_universe(universe: list[list[str]]):
     '''
     expands the universe
@@ -81,8 +113,8 @@ def expand_universe(universe: list[list[str]]):
     any rows or columns that contain no galaxies
     should all actually be twice as big
     '''
-    expand_rows(universe)
     expand_cols(universe)
+    expand_rows(universe)
 
 
 def get_galaxies(universe: list[list[str]]) -> list[Point]:
@@ -126,9 +158,8 @@ def old_get_galaxy_pairs_check(universe: list[list[str]]) -> list[tuple[Point, P
     return galaxy_pairs
 
 
-def get_galaxy_pairs(universe: list[list[str]]) -> list[tuple[Point, Point]]:
+def get_galaxy_pairs(galaxies: list[Point]) -> list[tuple[Point, Point]]:
     '''returns a list of pairs'''
-    galaxies = get_galaxies(universe)
     # this is why you shouldnt reinvent the wheel
     return list(combinations(galaxies, 2))
 
@@ -153,7 +184,36 @@ def solve_part_one():
     '''solves part one of day 11'''
     universe = read_input()
     expand_universe(universe)
-    pairs = get_galaxy_pairs(universe)
+    galaxies = get_galaxies(universe)
+    pairs = get_galaxy_pairs(galaxies)
+    shortest_paths = []
+    for pair in pairs:
+        shortest_paths.append(get_shortest_path(pair))
+    print(get_sum(shortest_paths))
+
+
+def solve_part_two():
+    '''solves part two of day 11'''
+    universe = read_input()
+    # instead of expanding, modify the points of galaxies
+    galaxies = get_galaxies(universe)
+    expanding_columns = expand_cols_theory(universe)
+    expanding_rows = expand_rows_theory(universe)
+    for galaxy in galaxies:
+        # modify the point based on the "theoretical expansion"
+        # to do that i need to know:
+        # x/y position of galaxy, amount of expansions happening on x/y
+        diff_x = 0
+        diff_y = 0
+        for col in expanding_columns:
+            if galaxy.x > col:
+                diff_x += EXPAND - 1
+        galaxies[galaxies.index(galaxy)].x += diff_x
+        for row in expanding_rows:
+            if galaxy.y > row:
+                diff_y += EXPAND - 1
+        galaxies[galaxies.index(galaxy)].y += diff_y
+    pairs = get_galaxy_pairs(galaxies)
     shortest_paths = []
     for pair in pairs:
         shortest_paths.append(get_shortest_path(pair))
@@ -162,3 +222,4 @@ def solve_part_one():
 
 if __name__ == '__main__':
     solve_part_one()
+    solve_part_two()
