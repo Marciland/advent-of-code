@@ -21,10 +21,11 @@ then find the length of the shortest path
 between every pair of galaxies.
 What is the sum of these lengths?
 '''
-import os
 import copy
+import os
+from itertools import combinations
 
-from helpers import get_sum, Point
+from helpers import Point, get_sum
 
 day11_input = os.path.join(os.getcwd(), 'day11.txt')
 
@@ -94,14 +95,58 @@ def get_galaxies(universe: list[list[str]]) -> list[Point]:
     return galaxies
 
 
+def old_get_galaxy_pairs_add_remove(universe: list[list[str]]) -> list[tuple[Point, Point]]:
+    '''returns a list of pairs'''
+    galaxies = get_galaxies(universe)
+    galaxy_pairs = []
+    for first_galaxy in galaxies:
+        for second_galaxy in galaxies:
+            if not first_galaxy == second_galaxy:
+                galaxy_pairs.append((first_galaxy, second_galaxy))
+    removed_pairs = []
+    temp = galaxy_pairs.copy()
+    for temp_pair in temp:
+        for pair in temp:
+            if temp_pair[0] == pair[1] and temp_pair[1] == pair[0]:
+                if not pair in removed_pairs and not temp_pair in removed_pairs:
+                    galaxy_pairs.remove(pair)
+                    removed_pairs.append(pair)
+    return galaxy_pairs
+
+
+def old_get_galaxy_pairs_check(universe: list[list[str]]) -> list[tuple[Point, Point]]:
+    '''returns a list of pairs'''
+    galaxies = get_galaxies(universe)
+    galaxy_pairs = []
+    for first_galaxy in galaxies:
+        for second_galaxy in galaxies:
+            if not first_galaxy == second_galaxy:
+                if (first_galaxy, second_galaxy) not in galaxy_pairs and (second_galaxy, first_galaxy) not in galaxy_pairs:
+                    galaxy_pairs.append((first_galaxy, second_galaxy))
+    return galaxy_pairs
+
+
 def get_galaxy_pairs(universe: list[list[str]]) -> list[tuple[Point, Point]]:
     '''returns a list of pairs'''
     galaxies = get_galaxies(universe)
-    return [(Point(x=1, y=2), Point(x=1, y=2))]
+    # this is why you shouldnt reinvent the wheel
+    return list(combinations(galaxies, 2))
 
 
 def get_shortest_path(pair: tuple[Point, Point]):
     '''returns the shortest path between the given pair'''
+    first_point = pair[0]
+    second_point = pair[1]
+    distance = 0
+    if first_point.x > second_point.x:
+        distance += first_point.x - second_point.x
+    else:
+        distance += second_point.x - first_point.x
+    if first_point.y > second_point.y:
+        distance += first_point.y - second_point.y
+    else:
+        distance += second_point.y - first_point.y
+    return distance
 
 
 def solve_part_one():
@@ -109,10 +154,10 @@ def solve_part_one():
     universe = read_input()
     expand_universe(universe)
     pairs = get_galaxy_pairs(universe)
-    lengths = []
+    shortest_paths = []
     for pair in pairs:
-        lengths.append(get_shortest_path(pair))
-    print(get_sum(lengths))
+        shortest_paths.append(get_shortest_path(pair))
+    print(get_sum(shortest_paths))
 
 
 if __name__ == '__main__':
