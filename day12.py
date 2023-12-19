@@ -114,8 +114,10 @@ def remove_obvious_arrangements(splits: list[str], numbers: list[int]):
         if idle:
             break
         if len(splits[0]) < numbers[0]:
-            print('remove', splits[0], 'from', splits, numbers)
             del splits[0]
+            continue
+        if len(splits[-1]) < numbers[-1]:
+            del splits[-1]
             continue
         idle = True
     if len(splits) == len(numbers) == 0:
