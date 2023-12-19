@@ -59,6 +59,7 @@ def is_possible(arrangement: str, numbers: list[int]) -> bool:
 def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
     if '?' in springs:
         all_possibilities = generate_possibilities(springs)
+        print('done with generating possibilities for', springs)
         return sum(1 for arrangement in all_possibilities if is_possible(arrangement, numbers))
     return None
 
@@ -76,5 +77,36 @@ def solve_part_one():
     print(get_sum(possible_arrangements))
 
 
+def unfold(springs: list[str], numbers: list[list[int]]):
+    '''
+    replace the list of springs with five copies of itself (separated by ?)
+    replace the list of numbers with five copies of itself (separated by ,)
+    .# 1 -> .#?.#?.#?.#?.# 1,1,1,1,1
+    '''
+    unfolded_springs = []
+    for spring in springs:
+        unfolded_springs.append((spring + '?') * 4 + spring)
+    unfolded_numbers = []
+    for number in numbers:
+        number = ','.join([str(x) for x in number])
+        unfolded_numbers.append((number + ',') * 4 + number)
+    return unfolded_springs, unfolded_numbers
+
+
+def solve_part_two():
+    '''solve part two, unfolding: 5 times the original'''
+    springs, numbers = read_input()
+    assert len(springs) == len(numbers)
+    springs, numbers = unfold(springs, numbers)
+    starmap = []
+    for i in range(0, len(springs), 1):
+        starmap.append((springs[i], numbers[i]))
+    with multiprocessing.Pool() as pool:
+        possible_arrangements = pool.starmap(get_possible_arrangements,
+                                             starmap)
+    print(get_sum(possible_arrangements))
+
+
 if __name__ == '__main__':
     solve_part_one()
+    solve_part_two()
