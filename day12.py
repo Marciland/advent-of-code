@@ -6,6 +6,7 @@ nonogram -> contiguous group of damaged
 
 find sum of possible arrangements
 '''
+import multiprocessing
 import os
 
 from helpers import get_sum
@@ -141,6 +142,31 @@ def fill_obvious_defected(springs: str):
     return springs
 
 
+def generate_possibilities(springs: list, result: list = [], index: int = 0) -> list[str]:
+    if index == len(springs):
+        result.append(''.join(springs))
+        return result
+    if springs[index] == '?':
+        springs[index] = '.'
+        generate_possibilities(springs, result, index + 1)
+        springs[index] = '#'
+        generate_possibilities(springs, result, index + 1)
+        springs[index] = '?'
+    else:
+        generate_possibilities(springs, result, index + 1)
+    return result
+
+
+def is_possible(arrangement: str, numbers: list[int]) -> bool:
+    splits = [x for x in arrangement.split('.') if x]
+    if len(splits) != len(numbers):
+        return False
+    for index in range(0, len(splits), 1):
+        if len(splits[index]) != numbers[index]:
+            return False
+    return True
+
+
 def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
     '''get possible arrangements of damaged springs'''
     splits = [x for x in springs.split('.') if x]
@@ -158,19 +184,32 @@ def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
         # .???. 2 -> .##.. || ..##.
         if len(springs) == numbers[0] + 1:
             return 2
-    print(springs, numbers)
-    # find possible arrangements
-    return 0
+    if '?' in springs:
+        all_possibilities = generate_possibilities(list(springs))
+        temp = all_possibilities.copy()
+        for arrangement in temp:
+            if all_possibilities.count(arrangement) > 1:
+                all_possibilities.remove(arrangement)
+        counter = 0
+        for arrangement in all_possibilities:
+            if all_possibilities.count(arrangement) > 1:
+                print('ffuuucck')
+            if is_possible(arrangement, numbers):
+                counter += 1
+        return counter
+    return None
 
 
 def solve_part_one():
     '''solve part one, needs the sum of possible arrangements'''
     springs, numbers = read_input()
     assert len(springs) == len(numbers)
-    possible_arrangements = []
+    starmap = []
     for i in range(0, len(springs), 1):
-        possible_arrangements.append(get_possible_arrangements(springs[i],
-                                                               numbers[i]))
+        starmap.append((springs[i], numbers[i]))
+    with multiprocessing.Pool() as pool:
+        possible_arrangements = pool.starmap(get_possible_arrangements,
+                                             starmap)
     print(get_sum(possible_arrangements))
 
 
