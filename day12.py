@@ -124,12 +124,35 @@ def remove_obvious_arrangements(splits: list[str], numbers: list[int]):
         return
 
 
+def fill_obvious_defected(springs: str):
+    '''if only 1 number is searched and there are split #, fill in middle'''
+    start = None
+    end = None
+    counter = 0
+    for i in range(0, len(springs), 1):
+        if springs[i] == '#':
+            if counter == 0:
+                start = i
+            counter += 1
+            if counter == springs.count('#'):
+                end = i
+    if end > start:
+        springs = springs[0:start] + '#' * (end-start) + springs[end:]
+    return springs
+
+
 def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
     '''get possible arrangements of damaged springs'''
     splits = [x for x in springs.split('.') if x]
     remove_obvious_arrangements(splits, numbers)
     if len(splits) == len(numbers) == 0:
         return 1
+    springs = '.'.join(splits)
+    if springs.count('#') == get_sum(numbers):
+        return 1
+    if len(numbers) == 1 and springs.count('#') > 0:
+        springs = fill_obvious_defected(springs)
+    print(springs, numbers)
     # find possible arrangements
     return 0
 
