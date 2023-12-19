@@ -109,6 +109,17 @@ def remove_obvious_arrangements(splits: list[str], numbers: list[int]):
         splits.remove(sp)
     if len(splits) == len(numbers) == 0:
         return
+    idle = False
+    while True:
+        if idle:
+            break
+        if len(splits[0]) < numbers[0]:
+            print('remove', splits[0], 'from', splits, numbers)
+            del splits[0]
+            continue
+        idle = True
+    if len(splits) == len(numbers) == 0:
+        return
 
 
 def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
