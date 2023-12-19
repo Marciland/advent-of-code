@@ -8,6 +8,7 @@ find sum of possible arrangements
 '''
 import multiprocessing
 import os
+from itertools import product
 
 from helpers import get_sum
 
@@ -21,182 +22,44 @@ def read_input() -> tuple[list[str], list[list[int]]]:
     springs = [line.split(' ')[0] for line in file_content]
     numbers = [[int(number) for number in line.split(' ')[1].split(',')]
                for line in file_content]
-    return (springs, numbers)
-
-
-def remove_obvious_arrangements(splits: list[str], numbers: list[int]):
-    '''obvious if:'''
-    len_splits = 0
-    len_numbers = get_sum(numbers)
-    for sp in splits:
-        len_splits += len(sp)
-    if len_splits == len_numbers:
-        splits.clear()
-        numbers.clear()
-        return
-    idle = False
-    while True:
-        if idle:
-            break
-        if len(splits[0]) == numbers[0] and '?' not in splits[0]:
-            del splits[0]
-            del numbers[0]
-            continue
-        idle = True
-    temp = splits.copy()
-    for sp in temp:
-        if '?' in sp:
-            continue
-        if numbers.count(len(sp)) == 1:
-            # print('remove', sp, 'from', splits, numbers, 'at', splits.index(sp), numbers.index(len(sp)))
-            splits.remove(sp)
-            numbers.remove(len(sp))
-    if len(splits) == len(numbers) == 0:
-        return
-    temp = splits.copy()
-    for sp in temp:
-        if '?' in sp:
-            continue
-        if len(numbers) != len(splits):
-            continue
-        if splits.index(sp) == numbers.index(len(sp)):
-            # print('remove', sp, 'from', splits, numbers, 'at', splits.index(sp), numbers.index(len(sp)))
-            splits.remove(sp)
-            numbers.remove(len(sp))
-    if len(splits) == len(numbers) == 0:
-        return
-    temp = splits.copy()
-    for sp in temp:
-        if len(sp) < 5:
-            continue
-        if len(numbers) != len(splits):
-            continue
-        if len(sp) not in numbers:
-            continue
-        if splits.index(sp) != numbers.index(len(sp)):
-            continue
-        if numbers.count(len(sp)) == 1:
-            # print('remove', sp, 'from', splits, numbers, 'at', splits.index(sp), numbers.index(len(sp)))
-            splits.remove(sp)
-            numbers.remove(len(sp))
-    if len(splits) == len(numbers) == 0:
-        return
-    temp = splits.copy()
-    for sp in temp:
-        if sp.count('#') not in numbers:
-            continue
-        if numbers.count(sp.count('#')) != 1:
-            continue
-        if len(splits) != len(numbers):
-            continue
-        if sp.count('?') > numbers[numbers.index(sp.count('#'))]:
-            continue
-        if '#' * numbers[numbers.index(sp.count('#'))] not in sp:
-            continue
-        if splits.index(sp) == numbers.index(sp.count('#')):
-            # print('remove', sp, 'from', splits, numbers, 'at', splits.index(sp), numbers.index(sp.count('#')))
-            splits.remove(sp)
-            numbers.remove(sp.count('#'))
-    if len(splits) == len(numbers) == 0:
-        return
-    temp = splits.copy()
-    for sp in temp:
-        if '?' in sp:
-            continue
-        if len(numbers) != len(splits):
-            continue
-        # print('remove', sp, 'from', splits, numbers, 'at', splits.index(sp), numbers[splits.index(sp)])
-        del numbers[splits.index(sp)]
-        splits.remove(sp)
-    if len(splits) == len(numbers) == 0:
-        return
-    idle = False
-    while True:
-        if idle:
-            break
-        if len(splits[0]) < numbers[0]:
-            del splits[0]
-            continue
-        if len(splits[-1]) < numbers[-1]:
-            del splits[-1]
-            continue
-        idle = True
-    if len(splits) == len(numbers) == 0:
-        return
+    return springs, numbers
 
 
 def fill_obvious_defected(springs: str):
     '''if only 1 number is searched and there are split #, fill in middle'''
-    start = None
-    end = None
+    start, end = None, None
     counter = 0
-    for i in range(0, len(springs), 1):
-        if springs[i] == '#':
+    for i, char in enumerate(springs):
+        if char == '#':
             if counter == 0:
                 start = i
             counter += 1
             if counter == springs.count('#'):
                 end = i
     if end > start:
-        springs = springs[0:start] + '#' * (end-start) + springs[end:]
+        springs = springs[:start] + '#' * (end-start) + springs[end:]
     return springs
 
 
-def generate_possibilities(springs: list, result: list = [], index: int = 0) -> list[str]:
-    if index == len(springs):
-        result.append(''.join(springs))
-        return result
-    if springs[index] == '?':
-        springs[index] = '.'
-        generate_possibilities(springs, result, index + 1)
-        springs[index] = '#'
-        generate_possibilities(springs, result, index + 1)
-        springs[index] = '?'
-    else:
-        generate_possibilities(springs, result, index + 1)
-    return result
+def generate_possibilities(springs: str) -> set:
+    possibilities = set()
+    for arrangement in product('.#', repeat=springs.count('?')):
+        possible_springs = iter(arrangement)
+        new_springs = ''.join(s if s != '?'
+                              else next(possible_springs) for s in springs)
+        possibilities.add(new_springs)
+    return possibilities
 
 
 def is_possible(arrangement: str, numbers: list[int]) -> bool:
     splits = [x for x in arrangement.split('.') if x]
-    if len(splits) != len(numbers):
-        return False
-    for index in range(0, len(splits), 1):
-        if len(splits[index]) != numbers[index]:
-            return False
-    return True
+    return len(splits) == len(numbers) and all(len(sp) == number for sp, number in zip(splits, numbers))
 
 
 def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
-    '''get possible arrangements of damaged springs'''
-    splits = [x for x in springs.split('.') if x]
-    remove_obvious_arrangements(splits, numbers)
-    if len(splits) == len(numbers) == 0:
-        return 1
-    springs = '.'.join(splits)
-    if springs.count('#') == get_sum(numbers):
-        return 1
-    if len(numbers) == 1 and springs.count('#') > 0:
-        springs = fill_obvious_defected(springs)
-    if get_sum(numbers) + len(numbers) - 1 == len(springs):
-        return 1
-    if len(numbers) == 1:
-        # .???. 2 -> .##.. || ..##.
-        if len(springs) == numbers[0] + 1:
-            return 2
     if '?' in springs:
-        all_possibilities = generate_possibilities(list(springs))
-        temp = all_possibilities.copy()
-        for arrangement in temp:
-            if all_possibilities.count(arrangement) > 1:
-                all_possibilities.remove(arrangement)
-        counter = 0
-        for arrangement in all_possibilities:
-            if all_possibilities.count(arrangement) > 1:
-                print('ffuuucck')
-            if is_possible(arrangement, numbers):
-                counter += 1
-        return counter
+        all_possibilities = generate_possibilities(springs)
+        return sum(1 for arrangement in all_possibilities if is_possible(arrangement, numbers))
     return None
 
 
