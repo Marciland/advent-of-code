@@ -152,6 +152,12 @@ def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
         return 1
     if len(numbers) == 1 and springs.count('#') > 0:
         springs = fill_obvious_defected(springs)
+    if get_sum(numbers) + len(numbers) - 1 == len(springs):
+        return 1
+    if len(numbers) == 1:
+        # .???. 2 -> .##.. || ..##.
+        if len(springs) == numbers[0] + 1:
+            return 2
     print(springs, numbers)
     # find possible arrangements
     return 0
