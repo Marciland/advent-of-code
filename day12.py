@@ -59,6 +59,23 @@ def remove_obvious(springs: str, numbers: list[int]):
                     del splits[i]
                     del numbers[i]
                     continue
+        if splits[0][0] == '#':
+            if len(splits[0][numbers[0]+1:]) == 0:
+                del splits[0]
+            else:
+                splits[0] = splits[0][numbers[0]+1:]
+            del numbers[0]
+            continue
+        if splits[-1][-1] == '#':
+            if len(splits[-1][:-numbers[-1]]) == 0:
+                del splits[-1]
+            else:
+                if splits[-1][:-numbers[-1]-1] != '':
+                    splits[-1] = splits[-1][:-numbers[-1]-1]
+                else:
+                    del splits[-1]
+            del numbers[-1]
+            continue
         if len(splits[0]) == numbers[0] and '?' not in splits[0]:
             del splits[0]
             del numbers[0]
@@ -183,9 +200,9 @@ if __name__ == '__main__':
     new = solve_part_one_new()
     new_time = perf_counter()-start_timer
     print('solved part one new in:', new_time)
-    print('old', old, 'new', new)
+    print('old == new ==', new)
     assert old == new
     assert old_time > new_time
-    start_timer = perf_counter()
-    solve_part_two()
-    print('solved part two in:', perf_counter()-start_timer)
+    # start_timer = perf_counter()
+    # solve_part_two()
+    # print('solved part two in:', perf_counter()-start_timer)
