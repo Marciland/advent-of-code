@@ -90,10 +90,17 @@ def remove_obvious(springs: str, numbers: list[int]):
         if len(splits[-1]) < numbers[-1]:
             del splits[-1]
             continue
+        if len(numbers) == len(splits) == 1:
+            if len(splits[0]) == numbers[0]:
+                del splits[0]
+                del numbers[0]
+                continue
         idle = True
     springs = '.'.join(splits)
-    if len(numbers) == 1:
+    if len(numbers) == 1 and '#' in springs:
         springs = fill_obvious_defected(springs)
+        if springs.count('#') == numbers[0]:
+            return [], []
     return springs, numbers
 
 
@@ -126,8 +133,9 @@ def get_possible_arrangements_new(springs: str, numbers: list[int]) -> int:
         return 1
     if len(springs) == sum(numbers) + len(numbers) - 1:
         return 1
-    if len(numbers) == 1 and len(springs) + 1 == numbers[0]:
-        return 2
+    if len(numbers) == 1:
+        if numbers[0] + 1 == len(springs):
+            return 2
     if '?' in springs:
         all_possibilities = generate_possibilities(springs, numbers)
         return sum(1 for _ in all_possibilities)
