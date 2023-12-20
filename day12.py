@@ -203,6 +203,6 @@ if __name__ == '__main__':
     print('old == new ==', new)
     assert old == new
     assert old_time > new_time
-    # start_timer = perf_counter()
-    # solve_part_two()
-    # print('solved part two in:', perf_counter()-start_timer)
+    start_timer = perf_counter()
+    solve_part_two()
+    print('solved part two in:', perf_counter()-start_timer)
