@@ -28,18 +28,10 @@ def read_input() -> tuple[list[str], list[list[int]]]:
 
 def fill_obvious_defected(springs: str):
     '''if only 1 number is searched and there are split #, fill in middle'''
-    start, end = None, None
-    counter = 0
-    for i, char in enumerate(springs):
-        if char == '#':
-            if counter == 0:
-                start = i
-            counter += 1
-            if counter == springs.count('#'):
-                end = i
-    if start and end:
-        if end > start:
-            springs = springs[:start] + '#' * (end-start) + springs[end:]
+    start = springs.find('#')
+    end = springs.rfind('#')
+    if start != -1 and end != -1 and end > start:
+        springs = springs[:start] + '#' * (end - start) + springs[end:]
     return springs
 
 
