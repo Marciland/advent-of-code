@@ -9,6 +9,7 @@ find sum of possible arrangements
 import multiprocessing
 import os
 from itertools import product
+from time import perf_counter
 
 from helpers import get_sum
 
@@ -36,12 +37,38 @@ def fill_obvious_defected(springs: str):
             counter += 1
             if counter == springs.count('#'):
                 end = i
-    if end > start:
-        springs = springs[:start] + '#' * (end-start) + springs[end:]
+    if start and end:
+        if end > start:
+            springs = springs[:start] + '#' * (end-start) + springs[end:]
     return springs
 
 
 def remove_obvious(springs: str, numbers: list[int]):
+    splits = [x for x in springs.split('.') if x]
+    idle = False
+    while True:
+        if idle:
+            break
+        if len(splits) == len(numbers):
+            for i, sp in enumerate(splits):
+                if '?' in sp:
+                    continue
+                if len(sp) == numbers[i]:
+                    del splits[i]
+                    del numbers[i]
+                    continue
+        if len(splits[0]) == numbers[0] and '?' not in splits[0]:
+            del splits[0]
+            del numbers[0]
+            continue
+        if len(splits[-1]) == numbers[-1] and '?' not in splits[-1]:
+            del splits[-1]
+            del numbers[-1]
+            continue
+        idle = True
+    springs = '.'.join(splits)
+    if len(numbers) == 1:
+        springs = fill_obvious_defected(springs)
     return springs, numbers
 
 
@@ -62,12 +89,24 @@ def is_possible(arrangement: str, numbers: list[int]) -> bool:
 
 
 def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
-    springs, numbers = remove_obvious(springs, numbers)
     if '?' in springs:
         all_possibilities = generate_possibilities(springs, numbers)
-        print('done with generating possibilities for', springs)
         return sum(1 for _ in all_possibilities)
-    return None
+    return 1
+
+
+def get_possible_arrangements_new(springs: str, numbers: list[int]) -> int:
+    springs, numbers = remove_obvious(springs, numbers)
+    if len(springs) == len(numbers) == 0:
+        return 1
+    if len(springs) == sum(numbers) + len(numbers) - 1:
+        return 1
+    if len(numbers) == 1 and len(springs) + 1 == numbers[0]:
+        return 2
+    if '?' in springs:
+        all_possibilities = generate_possibilities(springs, numbers)
+        return sum(1 for _ in all_possibilities)
+    return 1
 
 
 def solve_part_one():
@@ -80,7 +119,20 @@ def solve_part_one():
     with multiprocessing.Pool() as pool:
         possible_arrangements = pool.starmap(get_possible_arrangements,
                                              starmap)
-    print(get_sum(possible_arrangements))
+    return get_sum(possible_arrangements)
+
+
+def solve_part_one_new():
+    '''solve part one, needs the sum of possible arrangements'''
+    springs, numbers = read_input()
+    assert len(springs) == len(numbers)
+    starmap = []
+    for i in range(0, len(springs), 1):
+        starmap.append((springs[i], numbers[i]))
+    with multiprocessing.Pool() as pool:
+        possible_arrangements = pool.starmap(get_possible_arrangements_new,
+                                             starmap)
+    return get_sum(possible_arrangements)
 
 
 def unfold(springs: list[str], numbers: list[list[int]]):
@@ -95,7 +147,7 @@ def unfold(springs: list[str], numbers: list[list[int]]):
     unfolded_numbers = []
     for number in numbers:
         number = ','.join([str(x) for x in number])
-        unfolded_numbers.append((number + ',') * 4 + number)
+        unfolded_numbers.append([int(x) for x in ((number + ',') * 4 + number).split(',')])
     return unfolded_springs, unfolded_numbers
 
 
@@ -108,11 +160,20 @@ def solve_part_two():
     for i in range(0, len(springs), 1):
         starmap.append((springs[i], numbers[i]))
     with multiprocessing.Pool() as pool:
-        possible_arrangements = pool.starmap(get_possible_arrangements,
+        possible_arrangements = pool.starmap(get_possible_arrangements_new,
                                              starmap)
     print(get_sum(possible_arrangements))
 
 
 if __name__ == '__main__':
-    solve_part_one()
+    start_timer = perf_counter()
+    old = solve_part_one()
+    print('solved part one in:', perf_counter()-start_timer)
+    start_timer = perf_counter()
+    new = solve_part_one_new()
+    print('solved part one new in:', perf_counter()-start_timer)
+    print('old', old, 'new', new)
+    assert old == new
+    start_timer = perf_counter()
     solve_part_two()
+    print('solved part two in:', perf_counter()-start_timer)
