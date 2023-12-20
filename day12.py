@@ -41,13 +41,18 @@ def fill_obvious_defected(springs: str):
     return springs
 
 
-def generate_possibilities(springs: str) -> set:
+def remove_obvious(springs: str, numbers: list[int]):
+    return springs, numbers
+
+
+def generate_possibilities(springs: str, numbers: list[int]) -> set:
     possibilities = set()
     for arrangement in product('.#', repeat=springs.count('?')):
         possible_springs = iter(arrangement)
         new_springs = ''.join(s if s != '?'
                               else next(possible_springs) for s in springs)
-        possibilities.add(new_springs)
+        if is_possible(new_springs, numbers):
+            possibilities.add(new_springs)
     return possibilities
 
 
@@ -57,10 +62,11 @@ def is_possible(arrangement: str, numbers: list[int]) -> bool:
 
 
 def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
+    springs, numbers = remove_obvious(springs, numbers)
     if '?' in springs:
-        all_possibilities = generate_possibilities(springs)
+        all_possibilities = generate_possibilities(springs, numbers)
         print('done with generating possibilities for', springs)
-        return sum(1 for arrangement in all_possibilities if is_possible(arrangement, numbers))
+        return sum(1 for _ in all_possibilities)
     return None
 
 
