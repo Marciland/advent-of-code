@@ -47,6 +47,8 @@ def remove_obvious(springs: str, numbers: list[int]):
     splits = [x for x in springs.split('.') if x]
     idle = False
     while True:
+        if len(splits) == 0 or len(numbers) == 0:
+            break
         if idle:
             break
         if len(splits) == len(numbers):
@@ -64,6 +66,12 @@ def remove_obvious(springs: str, numbers: list[int]):
         if len(splits[-1]) == numbers[-1] and '?' not in splits[-1]:
             del splits[-1]
             del numbers[-1]
+            continue
+        if len(splits[0]) < numbers[0]:
+            del splits[0]
+            continue
+        if len(splits[-1]) < numbers[-1]:
+            del splits[-1]
             continue
         idle = True
     springs = '.'.join(splits)
@@ -147,7 +155,8 @@ def unfold(springs: list[str], numbers: list[list[int]]):
     unfolded_numbers = []
     for number in numbers:
         number = ','.join([str(x) for x in number])
-        unfolded_numbers.append([int(x) for x in ((number + ',') * 4 + number).split(',')])
+        unfolded_numbers.append([int(x) for x in
+                                 ((number + ',') * 4 + number).split(',')])
     return unfolded_springs, unfolded_numbers
 
 
@@ -168,12 +177,15 @@ def solve_part_two():
 if __name__ == '__main__':
     start_timer = perf_counter()
     old = solve_part_one()
-    print('solved part one in:', perf_counter()-start_timer)
+    old_time = perf_counter()-start_timer
+    print('solved part one in:', old_time)
     start_timer = perf_counter()
     new = solve_part_one_new()
-    print('solved part one new in:', perf_counter()-start_timer)
+    new_time = perf_counter()-start_timer
+    print('solved part one new in:', new_time)
     print('old', old, 'new', new)
     assert old == new
+    assert old_time > new_time
     start_timer = perf_counter()
     solve_part_two()
     print('solved part two in:', perf_counter()-start_timer)
