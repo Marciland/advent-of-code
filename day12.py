@@ -28,7 +28,9 @@ def read_input() -> tuple[list[str], list[list[int]]]:
 
 def is_possible(arrangement: str, numbers: list[int]) -> bool:
     splits = [x for x in arrangement.split('.') if x]
-    return len(splits) == len(numbers) and all(len(sp) == number for sp, number in zip(splits, numbers))
+    if len(splits) != len(numbers):
+        return False
+    return all(len(sp) == number for sp, number in zip(splits, numbers))
 
 
 def generate_possibilities(springs: str, numbers: list[int]) -> set:
@@ -37,6 +39,21 @@ def generate_possibilities(springs: str, numbers: list[int]) -> set:
         possible_springs = iter(arrangement)
         new_springs = ''.join(s if s != '?'
                               else next(possible_springs) for s in springs)
+        if is_possible(new_springs, numbers):
+            possibilities.add(new_springs)
+    return possibilities
+
+
+def generate_possibilities_new(springs: str, numbers: list[int]) -> set:
+    possibilities = set()
+    defect_springs = springs.count('#')
+    expected_defected = sum(numbers)
+    for arrangement in product('.#', repeat=springs.count('?')):
+        if arrangement.count('#') + defect_springs != expected_defected:
+            continue
+        possible_springs = iter(arrangement)
+        new_springs = ''.join(s if s != '?' else next(
+            possible_springs) for s in springs)
         if is_possible(new_springs, numbers):
             possibilities.add(new_springs)
     return possibilities
@@ -95,17 +112,12 @@ def remove_obvious(springs: str, numbers: list[int]):
         if len(splits) == len(numbers):
             if len(splits[-1]) == numbers[-1] + 1:
                 if splits[-1].count('#') == numbers[-1]:
+                    print('1\n', splits, numbers, splits[-1], numbers[-1])
                     del splits[-1]
                     del numbers[-1]
                     continue
-            for i, sp in enumerate(splits):
-                if '?' in sp:
-                    continue
-                if len(sp) == numbers[i]:
-                    del splits[i]
-                    del numbers[i]
-                    continue
         if splits[0][0] == '#':
+            print('2\n', splits, numbers, splits[0], numbers[0])
             if len(splits[0][numbers[0]+1:]) == 0:
                 del splits[0]
             else:
@@ -113,6 +125,7 @@ def remove_obvious(springs: str, numbers: list[int]):
             del numbers[0]
             continue
         if splits[-1][-1] == '#':
+            print('3\n', splits, numbers, splits[-1], numbers[-1])
             if len(splits[-1][:-numbers[-1]]) == 0:
                 del splits[-1]
             else:
@@ -123,21 +136,26 @@ def remove_obvious(springs: str, numbers: list[int]):
             del numbers[-1]
             continue
         if len(splits[0]) == numbers[0] and '?' not in splits[0]:
+            print('4\n', splits, numbers, splits[0], numbers[0])
             del splits[0]
             del numbers[0]
             continue
         if len(splits[-1]) == numbers[-1] and '?' not in splits[-1]:
+            print('5\n', splits, numbers, splits[-1], numbers[-1])
             del splits[-1]
             del numbers[-1]
             continue
         if len(splits[0]) < numbers[0]:
+            print('6\n', splits, numbers, splits[0])
             del splits[0]
             continue
         if len(splits[-1]) < numbers[-1]:
+            print('7\n', splits, numbers, splits[-1])
             del splits[-1]
             continue
         if len(numbers) == len(splits) == 1:
             if len(splits[0]) == numbers[0]:
+                print('8\n', splits, numbers, splits[0], numbers[0])
                 del splits[0]
                 del numbers[0]
                 continue
@@ -145,6 +163,7 @@ def remove_obvious(springs: str, numbers: list[int]):
             for i, sp in enumerate(splits):
                 if sp.count('#') == numbers[i]:
                     if len(sp) == numbers[i] + 1:
+                        print('9\n', splits, numbers, splits[i], numbers[i])
                         del splits[i]
                         del numbers[i]
                         continue
@@ -152,9 +171,6 @@ def remove_obvious(springs: str, numbers: list[int]):
             if sum(len(x) for x in splits) == sum(numbers):
                 return [], []
         idle = True
-    for i, sp in enumerate(splits):
-        if len(sp) > 6:
-            print(splits, numbers, sp)
     springs = '.'.join(splits)
     if len(numbers) == 1 and '#' in springs:
         springs = fill_obvious_defected(springs)
@@ -176,7 +192,25 @@ def get_possible_arrangements_new(springs: str, numbers: list[int]) -> int:
             # print('hit 3')
             return 2
     if '?' in springs:
-        all_possibilities = generate_possibilities(springs, numbers)
+        all_possibilities = generate_possibilities_new(springs, numbers)
+        return sum(1 for _ in all_possibilities)
+    return 1
+
+
+def get_possible_arrangements_two(springs: str, numbers: list[int]) -> int:
+    if len(springs) == len(numbers) == 0:
+        # print('hit 1')
+        return 1
+    if len(springs) == sum(numbers) + len(numbers) - 1:
+        # print('hit 2')
+        return 1
+    if len(numbers) == 1:
+        if numbers[0] + 1 == len(springs):
+            # print('hit 3')
+            return 2
+    if '?' in springs:
+        all_possibilities = generate_possibilities_new(springs, numbers)
+        print('done')
         return sum(1 for _ in all_possibilities)
     return 1
 
@@ -198,7 +232,29 @@ def unfold(springs: list[str], numbers: list[list[int]]):
     return unfolded_springs, unfolded_numbers
 
 
+test_springs = ['???.###']
+test_numbers = [[1, 1, 3]]
+unfolded_test_springs, unfolded_test_numbers = unfold(
+    test_springs, test_numbers)
+assert unfolded_test_springs == ['???.###????.###????.###????.###????.###']
+assert unfolded_test_numbers == [[1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3]]
+
+
 def solve_part_two():
+    '''solve part two, unfolding: 5 times the original'''
+    springs, numbers = read_input()
+    assert len(springs) == len(numbers)
+    springs, numbers = unfold(springs, numbers)
+    starmap = []
+    for i in range(0, len(springs), 1):
+        starmap.append((springs[i], numbers[i]))
+    with multiprocessing.Pool() as pool:
+        possible_arrangements = pool.starmap(get_possible_arrangements_two,
+                                             starmap)
+    return get_sum(possible_arrangements)
+
+
+def solve_part_two_new():
     '''solve part two, unfolding: 5 times the original'''
     springs, numbers = read_input()
     assert len(springs) == len(numbers)
@@ -209,7 +265,7 @@ def solve_part_two():
     with multiprocessing.Pool() as pool:
         possible_arrangements = pool.starmap(get_possible_arrangements_new,
                                              starmap)
-    print(get_sum(possible_arrangements))
+    return get_sum(possible_arrangements)
 
 
 if __name__ == '__main__':
@@ -226,5 +282,14 @@ if __name__ == '__main__':
     assert old_time > new_time
     print('saved:', old_time - new_time)
     start_timer = perf_counter()
-    solve_part_two()
-    print('solved part two in:', perf_counter()-start_timer)
+    old_two = solve_part_two()
+    old_two_time = perf_counter()-start_timer
+    print('solved part two in:', old_two_time)
+    start_timer = perf_counter()
+    new_two = solve_part_two_new()
+    new_two_time = perf_counter()-start_timer
+    print('solved part two new in:', new_two_time)
+    print('old_two == new_two :', old_two, '==', new_two)
+    assert old_two == new_two
+    assert old_two_time > new_two_time
+    print('saved:', old_two_time - new_two_time)
