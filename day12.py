@@ -26,6 +26,55 @@ def read_input() -> tuple[list[str], list[list[int]]]:
     return springs, numbers
 
 
+def is_possible(arrangement: str, numbers: list[int]) -> bool:
+    splits = [x for x in arrangement.split('.') if x]
+    return len(splits) == len(numbers) and all(len(sp) == number for sp, number in zip(splits, numbers))
+
+
+def generate_possibilities(springs: str, numbers: list[int]) -> set:
+    possibilities = set()
+    for arrangement in product('.#', repeat=springs.count('?')):
+        possible_springs = iter(arrangement)
+        new_springs = ''.join(s if s != '?'
+                              else next(possible_springs) for s in springs)
+        if is_possible(new_springs, numbers):
+            possibilities.add(new_springs)
+    return possibilities
+
+
+def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
+    if '?' in springs:
+        all_possibilities = generate_possibilities(springs, numbers)
+        return sum(1 for _ in all_possibilities)
+    return 1
+
+
+def solve_part_one():
+    '''solve part one, needs the sum of possible arrangements'''
+    springs, numbers = read_input()
+    assert len(springs) == len(numbers)
+    starmap = []
+    for i in range(0, len(springs), 1):
+        starmap.append((springs[i], numbers[i]))
+    with multiprocessing.Pool() as pool:
+        possible_arrangements = pool.starmap(get_possible_arrangements,
+                                             starmap)
+    return get_sum(possible_arrangements)
+
+
+def solve_part_one_new():
+    '''solve part one, needs the sum of possible arrangements'''
+    springs, numbers = read_input()
+    assert len(springs) == len(numbers)
+    starmap = []
+    for i in range(0, len(springs), 1):
+        starmap.append((springs[i], numbers[i]))
+    with multiprocessing.Pool() as pool:
+        possible_arrangements = pool.starmap(get_possible_arrangements_new,
+                                             starmap)
+    return get_sum(possible_arrangements)
+
+
 def fill_obvious_defected(springs: str):
     '''if only 1 number is searched and there are split #, fill in middle'''
     start = springs.find('#')
@@ -44,6 +93,11 @@ def remove_obvious(springs: str, numbers: list[int]):
         if idle:
             break
         if len(splits) == len(numbers):
+            if len(splits[-1]) == numbers[-1] + 1:
+                if splits[-1].count('#') == numbers[-1]:
+                    del splits[-1]
+                    del numbers[-1]
+                    continue
             for i, sp in enumerate(splits):
                 if '?' in sp:
                     continue
@@ -87,7 +141,20 @@ def remove_obvious(springs: str, numbers: list[int]):
                 del splits[0]
                 del numbers[0]
                 continue
+        if len(splits) == len(numbers):
+            for i, sp in enumerate(splits):
+                if sp.count('#') == numbers[i]:
+                    if len(sp) == numbers[i] + 1:
+                        del splits[i]
+                        del numbers[i]
+                        continue
+        for i, sp in enumerate(splits):
+            if sum(len(x) for x in splits) == sum(numbers):
+                return [], []
         idle = True
+    for i, sp in enumerate(splits):
+        if len(sp) > 6:
+            print(splits, numbers, sp)
     springs = '.'.join(splits)
     if len(numbers) == 1 and '#' in springs:
         springs = fill_obvious_defected(springs)
@@ -96,68 +163,22 @@ def remove_obvious(springs: str, numbers: list[int]):
     return springs, numbers
 
 
-def generate_possibilities(springs: str, numbers: list[int]) -> set:
-    possibilities = set()
-    for arrangement in product('.#', repeat=springs.count('?')):
-        possible_springs = iter(arrangement)
-        new_springs = ''.join(s if s != '?'
-                              else next(possible_springs) for s in springs)
-        if is_possible(new_springs, numbers):
-            possibilities.add(new_springs)
-    return possibilities
-
-
-def is_possible(arrangement: str, numbers: list[int]) -> bool:
-    splits = [x for x in arrangement.split('.') if x]
-    return len(splits) == len(numbers) and all(len(sp) == number for sp, number in zip(splits, numbers))
-
-
-def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
-    if '?' in springs:
-        all_possibilities = generate_possibilities(springs, numbers)
-        return sum(1 for _ in all_possibilities)
-    return 1
-
-
 def get_possible_arrangements_new(springs: str, numbers: list[int]) -> int:
     springs, numbers = remove_obvious(springs, numbers)
     if len(springs) == len(numbers) == 0:
+        # print('hit 1')
         return 1
     if len(springs) == sum(numbers) + len(numbers) - 1:
+        # print('hit 2')
         return 1
     if len(numbers) == 1:
         if numbers[0] + 1 == len(springs):
+            # print('hit 3')
             return 2
     if '?' in springs:
         all_possibilities = generate_possibilities(springs, numbers)
         return sum(1 for _ in all_possibilities)
     return 1
-
-
-def solve_part_one():
-    '''solve part one, needs the sum of possible arrangements'''
-    springs, numbers = read_input()
-    assert len(springs) == len(numbers)
-    starmap = []
-    for i in range(0, len(springs), 1):
-        starmap.append((springs[i], numbers[i]))
-    with multiprocessing.Pool() as pool:
-        possible_arrangements = pool.starmap(get_possible_arrangements,
-                                             starmap)
-    return get_sum(possible_arrangements)
-
-
-def solve_part_one_new():
-    '''solve part one, needs the sum of possible arrangements'''
-    springs, numbers = read_input()
-    assert len(springs) == len(numbers)
-    starmap = []
-    for i in range(0, len(springs), 1):
-        starmap.append((springs[i], numbers[i]))
-    with multiprocessing.Pool() as pool:
-        possible_arrangements = pool.starmap(get_possible_arrangements_new,
-                                             starmap)
-    return get_sum(possible_arrangements)
 
 
 def unfold(springs: list[str], numbers: list[list[int]]):
@@ -200,9 +221,10 @@ if __name__ == '__main__':
     new = solve_part_one_new()
     new_time = perf_counter()-start_timer
     print('solved part one new in:', new_time)
-    print('old == new ==', new)
+    print('old == new :', old, '==', new)
     assert old == new
     assert old_time > new_time
+    print('saved:', old_time - new_time)
     start_timer = perf_counter()
     solve_part_two()
     print('solved part two in:', perf_counter()-start_timer)
