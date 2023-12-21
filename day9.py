@@ -12,8 +12,6 @@ sum the last entry of each list
 '''
 import os
 
-from helpers import get_sum
-
 day9_input = os.path.join(os.getcwd(), 'day9.txt')
 
 
@@ -85,10 +83,10 @@ if __name__ == '__main__':
     next_values = []
     for list_of_numbers in list_of_histories:
         next_values.append(predict_next(list_of_numbers))
-    print(get_sum(next_values))
+    print(sum(next_values))
     # part two
     list_of_histories = read_input()
     previous_values = []
     for list_of_numbers in list_of_histories:
         previous_values.append(predict_previous(list_of_numbers))
-    print(get_sum(previous_values))
+    print(sum(previous_values))

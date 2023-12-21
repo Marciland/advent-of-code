@@ -1,8 +1,6 @@
 '''https://adventofcode.com/2023/day/4'''
 import os
 
-from helpers import get_sum
-
 day4_input = os.path.join(os.getcwd(), 'day4.txt')
 
 
@@ -51,5 +49,5 @@ def get_cards_total(cards: list) -> list[int]:
     return amount_of_cards
 
 
-print(get_sum(get_points_per_card(read_input())))  # part one
-print(get_sum(get_cards_total(read_input())))  # part two
+print(sum(get_points_per_card(read_input())))  # part one
+print(sum(get_cards_total(read_input())))  # part two

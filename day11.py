@@ -25,7 +25,7 @@ import copy
 import os
 from itertools import combinations
 
-from helpers import Point, get_sum
+from helpers import Point
 
 day11_input = os.path.join(os.getcwd(), 'day11.txt')
 EXPAND = 1000000
@@ -189,7 +189,7 @@ def solve_part_one():
     shortest_paths = []
     for pair in pairs:
         shortest_paths.append(get_shortest_path(pair))
-    print(get_sum(shortest_paths))
+    print(sum(shortest_paths))
 
 
 def solve_part_two():
@@ -217,7 +217,7 @@ def solve_part_two():
     shortest_paths = []
     for pair in pairs:
         shortest_paths.append(get_shortest_path(pair))
-    print(get_sum(shortest_paths))
+    print(sum(shortest_paths))
 
 
 if __name__ == '__main__':

@@ -11,8 +11,6 @@ import os
 from itertools import product
 from time import perf_counter
 
-from helpers import get_sum
-
 day12_input = os.path.join(os.getcwd(), 'day12.txt')
 
 
@@ -76,7 +74,7 @@ def solve_part_one():
     with multiprocessing.Pool() as pool:
         possible_arrangements = pool.starmap(get_possible_arrangements,
                                              starmap)
-    return get_sum(possible_arrangements)
+    return sum(possible_arrangements)
 
 
 def solve_part_one_new():
@@ -89,7 +87,7 @@ def solve_part_one_new():
     with multiprocessing.Pool() as pool:
         possible_arrangements = pool.starmap(get_possible_arrangements_new,
                                              starmap)
-    return get_sum(possible_arrangements)
+    return sum(possible_arrangements)
 
 
 def fill_obvious_defected(springs: str):
@@ -251,7 +249,7 @@ def solve_part_two():
     with multiprocessing.Pool() as pool:
         possible_arrangements = pool.starmap(get_possible_arrangements_two,
                                              starmap)
-    return get_sum(possible_arrangements)
+    return sum(possible_arrangements)
 
 
 def solve_part_two_new():
@@ -265,7 +263,7 @@ def solve_part_two_new():
     with multiprocessing.Pool() as pool:
         possible_arrangements = pool.starmap(get_possible_arrangements_new,
                                              starmap)
-    return get_sum(possible_arrangements)
+    return sum(possible_arrangements)
 
 
 if __name__ == '__main__':

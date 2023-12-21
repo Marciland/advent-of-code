@@ -1,8 +1,6 @@
 '''https://adventofcode.com/2023/day/2'''
 import os
 
-from helpers import get_sum
-
 day2_input = os.path.join(os.getcwd(), 'day2.txt')
 MAX_RED = 12
 MAX_GREEN = 13
@@ -98,5 +96,5 @@ def get_powers(games: list[dict]) -> list[int]:
     return powers
 
 
-print(get_sum(get_valid_game_ids(read_input())))  # part one
-print(get_sum(get_powers(get_fewest_cubes(read_input()))))  # part two
+print(sum(get_valid_game_ids(read_input())))  # part one
+print(sum(get_powers(get_fewest_cubes(read_input()))))  # part two

@@ -5,8 +5,6 @@ play camel cards like poker
 '''
 import os
 
-from helpers import get_sum
-
 day7_input = os.path.join(os.getcwd(), 'day7.txt')
 
 
@@ -344,6 +342,6 @@ def get_ranks_two(hands: list[tuple[str, int, int]]) -> list[int]:
 
 
 # part one
-print(get_sum(get_ranks(set_hands_power(read_input()))))
+print(sum(get_ranks(set_hands_power(read_input()))))
 # part two: jokers are weakest now, but can increase power by completing sets
-print(get_sum(get_ranks_two(set_hands_power_two(read_input()))))
+print(sum(get_ranks_two(set_hands_power_two(read_input()))))

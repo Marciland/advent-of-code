@@ -1,8 +1,6 @@
 '''https://adventofcode.com/2023/day/3'''
 import os
 
-from helpers import get_sum
-
 day3_input = os.path.join(os.getcwd(), 'day3.txt')
 
 
@@ -208,6 +206,6 @@ def get_gear_ratios(gear_numbers: list[dict[int, int, str]]) -> list[int]:
     return gear_ratios
 
 
-print(get_sum(get_part_numbers(read_input())))  # part one
+print(sum(get_part_numbers(read_input())))  # part one
 
-print(get_sum(get_gear_ratios(get_gear_numbers(read_input()))))  # part two
+print(sum(get_gear_ratios(get_gear_numbers(read_input()))))  # part two

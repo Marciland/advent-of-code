@@ -1,8 +1,6 @@
 '''https://adventofcode.com/2023/day/1'''
 import os
 
-from helpers import get_sum
-
 day1_input = os.path.join(os.getcwd(), 'day1.txt')
 written_numbers = ['one', 'two', 'three', 'four',
                    'five', 'six', 'seven', 'eight', 'nine']
@@ -34,7 +32,7 @@ def get_numbers(text_input: list[str]) -> list[int]:
 assert get_numbers(['12383ajhlskgdhaodz12zghbvfdu6234jhl12213']) == [13]
 
 
-assert get_sum([15, 12, 33, 54]) == 15+12+33+54
+assert sum([15, 12, 33, 54]) == 15+12+33+54
 
 
 def substitute_written_numbers(text_input: list[str]) -> list[str]:
@@ -70,10 +68,10 @@ def substitute_written_numbers(text_input: list[str]) -> list[str]:
 text_list = read_input()
 
 number_list = get_numbers(text_list)
-final_sum = get_sum(number_list)
+final_sum = sum(number_list)
 print(final_sum)  # part one
 
 subsituted_text = substitute_written_numbers(text_list)
 number_list = get_numbers(subsituted_text)
-final_sum = get_sum(number_list)
+final_sum = sum(number_list)
 print(final_sum)  # part two
