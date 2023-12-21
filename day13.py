@@ -61,18 +61,18 @@ def read_input() -> list[list[list[str]]]:
 
 def find_reflections(pattern: list[list[str]]):
     '''finds the best reflection match'''
-    joined = []
+    joined_rows = []
     for row in pattern:
-        joined.append(''.join(row))
-    horizontal_matches, rows_above = get_highest_match(joined)
-    joined = []
+        joined_rows.append(''.join(row))
+    rows_above = find_reflection(joined_rows)
+    joined_cols = []
     for index in range(0, len(pattern[0]), 1):
         col = ''
         for row in pattern:
             col += row[index]
-        joined.append(col)
-    vertical_matches, columns_left = get_highest_match(joined)
-    if horizontal_matches > vertical_matches:
+        joined_cols.append(col)
+    columns_left = find_reflection(joined_cols)
+    if rows_above:
         return 100*rows_above
     return columns_left
 
@@ -84,6 +84,27 @@ def solve_part_one():
         return sum(pool.map(find_reflections, patterns))
 
 
+def find_reflection(pattern):
+    '''need perfect reflection'''
+    for index in range(0, len(pattern) - 1, 1):
+        if reflects(pattern, index, index+1):
+            return index + 1
+
+
+def reflects(pattern, left, right):
+    '''
+    if leaving vision -> true
+    if not reflecting false
+    '''
+    if left < 0:
+        return True
+    if right > len(pattern)-1:
+        return True
+    if pattern[left] == pattern[right]:
+        return reflects(pattern, left-1, right+1)
+    return False
+
+
 def get_highest_match(pattern, index=0, step=0, matches=0, highest=0, high_index=0):
     '''returns highest match count and index (amount of rows above or columns left!)'''
     if index == len(pattern) - 1:
@@ -91,6 +112,9 @@ def get_highest_match(pattern, index=0, step=0, matches=0, highest=0, high_index
     if index+step != len(pattern)-1 and index-step > 0:
         if pattern[index-step] == pattern[index+step+1]:
             return get_highest_match(pattern, index, step+1, matches+1, highest, high_index)
+    else:
+        if high_index != 0:
+            return highest, high_index+1
     if matches > highest:
         highest = matches
         high_index = index
@@ -105,4 +129,3 @@ if __name__ == '__main__':
     one_time = perf_counter() - start_time
     print('Result:', one_result)
     print('Time:', one_time)
-    assert one_result > 32271
