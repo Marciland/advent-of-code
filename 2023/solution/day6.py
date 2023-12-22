@@ -3,12 +3,10 @@ import os
 
 from helpers import get_product
 
-day6_input = os.path.join(os.getcwd(), 'day6.txt')
 
-
-def read_input() -> list[tuple[int, int]]:
+def read_input(file_path: str) -> list[tuple[int, int]]:
     '''formats the day6.txt'''
-    with open(day6_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     times = [int(time.strip()) for time in file_content[0].split(' ')
              if time.strip().isnumeric()]
@@ -20,9 +18,9 @@ def read_input() -> list[tuple[int, int]]:
     return races
 
 
-def read_input_two() -> list[tuple[int, int]]:
+def read_input_two(file_path: str) -> list[tuple[int, int]]:
     '''formats the day6.txt'''
-    with open(day6_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     times = [time.strip() for time in file_content[0].split(' ')
              if time.strip().isnumeric()]
@@ -58,7 +56,20 @@ def get_possibilities(races: list[tuple[int, int]]) -> list[int]:
     return possibilities
 
 
-# part one
-print(get_product(get_possibilities(read_input())))
-# part two
-print(get_product(get_possibilities(read_input_two())))
+def solve_part_one(races: list[tuple[int, int]]):
+    print(get_product(get_possibilities(races)))
+
+
+def solve_part_two(races: list[tuple[int, int]]):
+    print(get_product(get_possibilities(races)))
+
+
+def solve():
+    print('Day 6:')
+    day6_input = os.path.join(os.getcwd(), 'input', 'day6.txt')
+    races = read_input(day6_input)
+    print('part one: ', end='')
+    solve_part_one(races)
+    races = read_input_two(day6_input)
+    print('part two: ', end='')
+    solve_part_two(races)

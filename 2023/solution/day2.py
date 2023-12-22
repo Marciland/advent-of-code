@@ -1,16 +1,11 @@
 '''https://adventofcode.com/2023/day/2'''
 import os
 
-day2_input = os.path.join(os.getcwd(), 'day2.txt')
-MAX_RED = 12
-MAX_GREEN = 13
-MAX_BLUE = 14
 
-
-def read_input() -> dict[int, list[dict]]:
+def read_input(file_path: str) -> dict[int, list[dict]]:
     '''formats the day2.txt'''
     games_dict = {}
-    with open(day2_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     for line in file_content:
         game_sets = []
@@ -34,11 +29,11 @@ def read_input() -> dict[int, list[dict]]:
 def set_valid(game_set: dict) -> bool:
     '''check if a set is valid'''
     for color, amount in game_set.items():
-        if color == 'red' and amount > MAX_RED:
+        if color == 'red' and amount > 12:
             return False
-        if color == 'green' and amount > MAX_GREEN:
+        if color == 'green' and amount > 13:
             return False
-        if color == 'blue' and amount > MAX_BLUE:
+        if color == 'blue' and amount > 14:
             return False
     return True
 
@@ -96,5 +91,19 @@ def get_powers(games: list[dict]) -> list[int]:
     return powers
 
 
-print(sum(get_valid_game_ids(read_input())))  # part one
-print(sum(get_powers(get_fewest_cubes(read_input()))))  # part two
+def solve_part_one(games: dict[int, list[dict]]):
+    print(sum(get_valid_game_ids(games)))
+
+
+def solve_part_two(games: dict[int, list[dict]]):
+    print(sum(get_powers(get_fewest_cubes(games))))
+
+
+def solve():
+    print('Day 2:')
+    day2_input = os.path.join(os.getcwd(), 'input', 'day2.txt')
+    games = read_input(day2_input)
+    print('part one: ', end='')
+    solve_part_one(games)
+    print('part two: ', end='')
+    solve_part_two(games)

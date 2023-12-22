@@ -1,15 +1,11 @@
 '''https://adventofcode.com/2023/day/3'''
 import os
 
-day3_input = os.path.join(os.getcwd(), 'day3.txt')
 
-
-def read_input() -> list[str]:
+def read_input(file_path: str) -> list[str]:
     '''formats the day3.txt'''
-    with open(day3_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         return [line.strip() for line in file_handle.readlines()]
-
-# full number + index to have a unique identifier!!!
 
 
 def get_numbers_with_index(line: str) -> dict[int, str]:
@@ -27,8 +23,6 @@ def get_numbers_with_index(line: str) -> dict[int, str]:
     if current_digit != '':
         num_with_index.update({index-len(current_digit)+1: current_digit})
     return num_with_index
-
-# if only '.' is around a number -> not a part number!
 
 
 def has_symbol(previous_line: str | None, next_line: str | None, current_line: str, start_index: int, number: str) -> bool:
@@ -206,6 +200,19 @@ def get_gear_ratios(gear_numbers: list[dict[int, int, str]]) -> list[int]:
     return gear_ratios
 
 
-print(sum(get_part_numbers(read_input())))  # part one
+def solve_part_one(lines: list[str]):
+    print(sum(get_part_numbers(lines)))
 
-print(sum(get_gear_ratios(get_gear_numbers(read_input()))))  # part two
+
+def solve_part_two(lines: list[str]):
+    print(sum(get_gear_ratios(get_gear_numbers(lines))))
+
+
+def solve():
+    print('Day 3:')
+    day3_input = os.path.join(os.getcwd(), 'input', 'day3.txt')
+    lines = read_input(day3_input)
+    print('part one: ', end='')
+    solve_part_one(lines)
+    print('part two: ', end='')
+    solve_part_two(lines)

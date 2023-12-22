@@ -3,14 +3,13 @@ https://adventofcode.com/2023/day/8
 
 navigate L or R on the network
 '''
+import multiprocessing
 import os
 
-day8_input = os.path.join(os.getcwd(), 'day8.txt')
 
-
-def read_input() -> tuple[list[str], list[tuple[str, str, str]]]:
+def read_input(file_path: str) -> tuple[list[str], list[tuple[str, str, str]]]:
     '''formats the day8.txt'''
-    with open(day8_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     instructions = list(file_content[0].strip())
     file_content = [line.strip() for line in file_content[1:] if line.strip()]
@@ -91,7 +90,6 @@ def navigate_network_multi(instructions, nodes):
     pregenerate a list of steps to an end node for each starting location
     find the smallest match for all starting locations
     '''
-    import multiprocessing
     starting_locations = []
     for node in nodes:
         if is_start_node(node[0]):
@@ -113,9 +111,19 @@ def navigate_network_multi(instructions, nodes):
                                       steps[5])))
 
 
-if __name__ == '__main__':
-    list_of_instructions, list_of_nodes = read_input()
-    # part one
+def solve_part_one(list_of_instructions: list[str], list_of_nodes: list[tuple[str, str, str]]):
     print(navigate_network(list_of_instructions, list_of_nodes))
-    # part two
+
+
+def solve_part_two(list_of_instructions: list[str], list_of_nodes: list[tuple[str, str, str]]):
     print(navigate_network_multi(list_of_instructions, list_of_nodes))
+
+
+def solve():
+    print('Day 8:')
+    day8_input = os.path.join(os.getcwd(), 'input', 'day8.txt')
+    list_of_instructions, list_of_nodes = read_input(day8_input)
+    print('part one: ', end='')
+    solve_part_one(list_of_instructions, list_of_nodes)
+    print('part two: ', end='')
+    solve_part_two(list_of_instructions, list_of_nodes)

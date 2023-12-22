@@ -1,12 +1,10 @@
 '''https://adventofcode.com/2023/day/4'''
 import os
 
-day4_input = os.path.join(os.getcwd(), 'day4.txt')
 
-
-def read_input() -> list:
+def read_input(file_path: str) -> list:
     '''formats the day4.txt'''
-    with open(day4_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = [line.strip() for line in file_handle.readlines()]
     cards = []
     for line in file_content:
@@ -49,5 +47,19 @@ def get_cards_total(cards: list) -> list[int]:
     return amount_of_cards
 
 
-print(sum(get_points_per_card(read_input())))  # part one
-print(sum(get_cards_total(read_input())))  # part two
+def solve_part_one(cards: list):
+    print(sum(get_points_per_card(cards)))
+
+
+def solve_part_two(cards: list):
+    print(sum(get_cards_total(cards)))
+
+
+def solve():
+    print('Day 4:')
+    day4_input = os.path.join(os.getcwd(), 'input', 'day4.txt')
+    cards = read_input(day4_input)
+    print('part one: ', end='')
+    solve_part_one(cards)
+    print('part two: ', end='')
+    solve_part_two(cards)

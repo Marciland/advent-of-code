@@ -1,14 +1,10 @@
 '''https://adventofcode.com/2023/day/1'''
 import os
 
-day1_input = os.path.join(os.getcwd(), 'day1.txt')
-written_numbers = ['one', 'two', 'three', 'four',
-                   'five', 'six', 'seven', 'eight', 'nine']
 
-
-def read_input() -> list[str]:
+def read_input(file_path: str) -> list[str]:
     '''return day1.txt as list of strings'''
-    with open(day1_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         return file_handle.readlines()
 
 
@@ -29,14 +25,10 @@ def get_numbers(text_input: list[str]) -> list[int]:
     return numbers
 
 
-assert get_numbers(['12383ajhlskgdhaodz12zghbvfdu6234jhl12213']) == [13]
-
-
-assert sum([15, 12, 33, 54]) == 15+12+33+54
-
-
 def substitute_written_numbers(text_input: list[str]) -> list[str]:
     '''converts written numbers to numbers'''
+    written_numbers = ['one', 'two', 'three', 'four', 'five',
+                       'six', 'seven', 'eight', 'nine']
     converted_list = []
     for line in text_input:
         new_line = line
@@ -65,13 +57,19 @@ def substitute_written_numbers(text_input: list[str]) -> list[str]:
     return converted_list
 
 
-text_list = read_input()
+def solve_part_one(text_list: list[str]):
+    print(sum(get_numbers(text_list)))
 
-number_list = get_numbers(text_list)
-final_sum = sum(number_list)
-print(final_sum)  # part one
 
-subsituted_text = substitute_written_numbers(text_list)
-number_list = get_numbers(subsituted_text)
-final_sum = sum(number_list)
-print(final_sum)  # part two
+def solve_part_two(text_list: list[str]):
+    print(sum(get_numbers(substitute_written_numbers(text_list))))
+
+
+def solve():
+    print('Day 1:')
+    day1_input = os.path.join(os.getcwd(), 'input', 'day1.txt')
+    text_list = read_input(day1_input)
+    print('part one: ', end='')
+    solve_part_one(text_list)
+    print('part two: ', end='')
+    solve_part_two(text_list)

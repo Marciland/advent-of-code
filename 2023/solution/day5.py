@@ -1,12 +1,10 @@
 '''https://adventofcode.com/2023/day/5'''
 import os
 
-day5_input = os.path.join(os.getcwd(), 'day5.txt')
 
-
-def read_input() -> tuple[list[int], list[list[dict]]]:
+def read_input(file_path: str) -> tuple[list[int], list[list[dict]]]:
     '''formats the day5.txt'''
-    with open(day5_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     seeds = file_content[0]
     seeds = [int(number.strip()) for number in seeds.split(' ')
@@ -69,9 +67,9 @@ def get_lowest_location(seeds: list[str], maps: list[list[dict]]) -> int:
     return lowest_location
 
 
-def read_input_two() -> tuple[list[int], list[list[tuple[int, int, int]]]]:
+def read_input_two(file_path: str) -> tuple[list[int], list[list[tuple[int, int, int]]]]:
     '''formats the day5.txt'''
-    with open(day5_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     seeds = file_content[0]
     seeds = [int(number.strip()) for number in seeds.split(' ')
@@ -130,10 +128,20 @@ def get_lowest_location_two(seeds: tuple[list[int]], maps: list[list[tuple[int, 
     return lowest_location
 
 
-if __name__ == '__main__':
-    # part one
-    seeds_list, map_list = read_input()
-    print('part one:', get_lowest_location(seeds_list, map_list))
-    # part two
-    seeds_list, map_list = read_input_two()
-    print('part two:', get_lowest_location_two(seeds_list, map_list))
+def solve_part_one(seeds_list: list[int], map_list: list[list[dict]]):
+    print(get_lowest_location(seeds_list, map_list))
+
+
+def solve_part_two(seeds_list: list[int], map_list: list[list[tuple[int, int, int]]]):
+    print(get_lowest_location_two(seeds_list, map_list))
+
+
+def solve():
+    print('Day 5:')
+    day5_input = os.path.join(os.getcwd(), 'input', 'day5.txt')
+    seeds, basic_maps = read_input(day5_input)
+    print('part one: ', end='')
+    solve_part_one(seeds, basic_maps)
+    seeds_list, map_list = read_input_two(day5_input)
+    print('part two: ', end='')
+    solve_part_two(seeds_list, map_list)

@@ -5,12 +5,10 @@ play camel cards like poker
 '''
 import os
 
-day7_input = os.path.join(os.getcwd(), 'day7.txt')
 
-
-def read_input() -> list[tuple[str, int]]:
+def read_input(file_path: str) -> list[tuple[str, int]]:
     '''formats the day7.txt'''
-    with open(day7_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     cards = []
     bids = []
@@ -341,7 +339,20 @@ def get_ranks_two(hands: list[tuple[str, int, int]]) -> list[int]:
     return bids_with_ranks
 
 
-# part one
-print(sum(get_ranks(set_hands_power(read_input()))))
-# part two: jokers are weakest now, but can increase power by completing sets
-print(sum(get_ranks_two(set_hands_power_two(read_input()))))
+def solve_part_one(hands: list[tuple[str, int]]):
+    print(sum(get_ranks(set_hands_power(hands))))
+
+
+def solve_part_two(hands: list[tuple[str, int]]):
+    print(sum(get_ranks_two(set_hands_power_two(hands))))
+
+
+def solve():
+    print('Day 7:')
+    day7_input = os.path.join(os.getcwd(), 'input', 'day7.txt')
+    hands = read_input(day7_input)
+    print('part one: ', end='')
+    solve_part_one(hands)
+    hands = read_input(day7_input)
+    print('part two: ', end='')
+    solve_part_two(hands)

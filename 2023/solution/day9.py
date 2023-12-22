@@ -12,12 +12,10 @@ sum the last entry of each list
 '''
 import os
 
-day9_input = os.path.join(os.getcwd(), 'day9.txt')
 
-
-def read_input() -> list[list[int]]:
+def read_input(file_path: str) -> list[list[int]]:
     '''formats the day9.txt'''
-    with open(day9_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     histories = []
     for line in file_content:
@@ -77,16 +75,26 @@ def predict_previous(history: list[int]) -> int:
     return differences[-1][0]
 
 
-if __name__ == '__main__':
-    # part one
-    list_of_histories = read_input()
+def solve_part_one(histories: list[list[int]]):
     next_values = []
-    for list_of_numbers in list_of_histories:
+    for list_of_numbers in histories:
         next_values.append(predict_next(list_of_numbers))
     print(sum(next_values))
-    # part two
-    list_of_histories = read_input()
+
+
+def solve_part_two(histories: list[list[int]]):
     previous_values = []
-    for list_of_numbers in list_of_histories:
+    for list_of_numbers in histories:
         previous_values.append(predict_previous(list_of_numbers))
     print(sum(previous_values))
+
+
+def solve():
+    print('Day 9:')
+    day9_input = os.path.join(os.getcwd(), 'input', 'day9.txt')
+    histories = read_input(day9_input)
+    print('part one: ', end='')
+    solve_part_one(histories)
+    histories = read_input(day9_input)
+    print('part two: ', end='')
+    solve_part_two(histories)

@@ -38,12 +38,10 @@ import os
 
 from helpers import Point
 
-day10_input = os.path.join(os.getcwd(), 'day10.txt')
 
-
-def read_input() -> list[list[str]]:
+def read_input(file_path: str) -> list[list[str]]:
     '''formats the day10.txt'''
-    with open(day10_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     lines = []
     for line in file_content:
@@ -215,12 +213,14 @@ def walk_the_roehre(field: list[list[str]], start_point: Point) -> int:
     return steps
 
 
-def solve_part_one():
-    '''solves part one'''
-    field = read_input()
-    start_point = find_start(field)
-    steps = walk_the_roehre(field, start_point)
-    return steps // 2
+def solve_part_one(field: list[list[str]]):
+    print(walk_the_roehre(field, find_start(field)) // 2)
 
 
-print(solve_part_one())
+def solve():
+    print('Day 10:')
+    day10_input = os.path.join(os.getcwd(), 'input', 'day10.txt')
+    field = read_input(day10_input)
+    print('part one: ', end='')
+    solve_part_one(field)
+    print('part two: WIP')
