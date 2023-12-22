@@ -65,6 +65,8 @@ def find_reflections(pattern: list[list[str]]):
     for row in pattern:
         joined_rows.append(''.join(row))
     rows_above = find_reflection(joined_rows)
+    if rows_above:
+        return 100*rows_above
     joined_cols = []
     for index in range(0, len(pattern[0]), 1):
         col = ''
@@ -72,9 +74,8 @@ def find_reflections(pattern: list[list[str]]):
             col += row[index]
         joined_cols.append(col)
     columns_left = find_reflection(joined_cols)
-    if rows_above:
-        return 100*rows_above
-    return columns_left
+    if columns_left:
+        return columns_left
 
 
 def solve_part_one():
@@ -84,9 +85,9 @@ def solve_part_one():
         return sum(pool.map(find_reflections, patterns))
 
 
-def find_reflection(pattern):
+def find_reflection(pattern, start_index=0):
     '''need perfect reflection'''
-    for index in range(0, len(pattern) - 1, 1):
+    for index in range(start_index, len(pattern) - 1, 1):
         if reflects(pattern, index, index+1):
             return index + 1
 
@@ -105,22 +106,68 @@ def reflects(pattern, left, right):
     return False
 
 
-def get_highest_match(pattern, index=0, step=0, matches=0, highest=0, high_index=0):
-    '''returns highest match count and index (amount of rows above or columns left!)'''
-    if index == len(pattern) - 1:
-        return highest, high_index+1
-    if index+step != len(pattern)-1 and index-step > 0:
-        if pattern[index-step] == pattern[index+step+1]:
-            return get_highest_match(pattern, index, step+1, matches+1, highest, high_index)
-    else:
-        if high_index != 0:
-            return highest, high_index+1
-    if matches > highest:
-        highest = matches
-        high_index = index
-    matches = 0
-    step = 0
-    return get_highest_match(pattern, index+1, step, matches, highest, high_index)
+def solve_part_two():
+    '''solve part two, smudge on mirrors'''
+    patterns = read_input()
+    with multiprocessing.Pool() as pool:
+        return sum(pool.map(find_reflections_smudge, patterns))
+
+
+def find_reflections_smudge(pattern: list[list[str]]):
+    '''
+    finds the reflection with smudge "somewhere"
+    smudge: exactly one . or # should be the opposite type.
+    '''
+    joined_rows = []
+    joined_cols = []
+    for row in pattern:
+        joined_rows.append(''.join(row))
+    for index in range(0, len(pattern[0]), 1):
+        col = ''
+        for row in pattern:
+            col += row[index]
+        joined_cols.append(col)
+    initial_rows = find_reflection(joined_rows)
+    initial_cols = find_reflection(joined_cols)
+    for y_index in range(0, len(pattern), 1):
+        for x_index in range(0, len(pattern[0]), 1):
+            pattern[y_index][x_index] = '.' if pattern[y_index][x_index] == '#' else '#'
+            joined_rows = []
+            joined_cols = []
+            for row in pattern:
+                joined_rows.append(''.join(row))
+            for index in range(0, len(pattern[0]), 1):
+                col = ''
+                for row in pattern:
+                    col += row[index]
+                joined_cols.append(col)
+            rows_above = find_reflection(joined_rows)
+            if rows_above:
+                if rows_above == initial_rows:
+                    temp_rows_above = find_reflection(joined_rows,
+                                                      start_index=rows_above)
+                    if temp_rows_above:
+                        rows_above = temp_rows_above
+            columns_left = find_reflection(joined_cols)
+            if columns_left:
+                if columns_left == initial_cols:
+                    temp_columns_left = find_reflection(joined_cols,
+                                                        start_index=columns_left)
+                    if temp_columns_left:
+                        columns_left = temp_columns_left
+            pattern[y_index][x_index] = '.' if pattern[y_index][x_index] == '#' else '#'
+            if rows_above is None and columns_left is None:
+                continue
+            if rows_above is None:
+                if columns_left == initial_cols:
+                    continue
+            if columns_left is None:
+                if rows_above == initial_rows:
+                    continue
+            if initial_rows == rows_above:
+                return columns_left
+            if initial_cols == columns_left:
+                return 100 * rows_above
 
 
 if __name__ == '__main__':
@@ -129,3 +176,8 @@ if __name__ == '__main__':
     one_time = perf_counter() - start_time
     print('Result:', one_result)
     print('Time:', one_time)
+    start_time = perf_counter()
+    two_result = solve_part_two()
+    two_time = perf_counter() - start_time
+    print('Result:', two_result)
+    print('Time:', two_time)
