@@ -24,16 +24,14 @@ What is the sum of these lengths?
 import copy
 import os
 from itertools import combinations
+from time import perf_counter
 
 from helpers import Point
 
-day11_input = os.path.join(os.getcwd(), 'day11.txt')
-EXPAND = 1000000
 
-
-def read_input() -> list[list[str]]:
+def read_input(file_path: str) -> list[list[str]]:
     '''formats the day11.txt'''
-    with open(day11_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     lines = []
     for line in file_content:
@@ -180,9 +178,8 @@ def get_shortest_path(pair: tuple[Point, Point]):
     return distance
 
 
-def solve_part_one():
+def solve_part_one(universe):
     '''solves part one of day 11'''
-    universe = read_input()
     expand_universe(universe)
     galaxies = get_galaxies(universe)
     pairs = get_galaxy_pairs(galaxies)
@@ -192,9 +189,8 @@ def solve_part_one():
     print(sum(shortest_paths))
 
 
-def solve_part_two():
+def solve_part_two(universe):
     '''solves part two of day 11'''
-    universe = read_input()
     # instead of expanding, modify the points of galaxies
     galaxies = get_galaxies(universe)
     expanding_columns = expand_cols_theory(universe)
@@ -207,11 +203,11 @@ def solve_part_two():
         diff_y = 0
         for col in expanding_columns:
             if galaxy.x > col:
-                diff_x += EXPAND - 1
+                diff_x += 1000000 - 1
         galaxies[galaxies.index(galaxy)].x += diff_x
         for row in expanding_rows:
             if galaxy.y > row:
-                diff_y += EXPAND - 1
+                diff_y += 1000000 - 1
         galaxies[galaxies.index(galaxy)].y += diff_y
     pairs = get_galaxy_pairs(galaxies)
     shortest_paths = []
@@ -220,6 +216,16 @@ def solve_part_two():
     print(sum(shortest_paths))
 
 
-if __name__ == '__main__':
-    solve_part_one()
-    solve_part_two()
+def solve():
+    print('Day 11:')
+    day11_input = os.path.join(os.getcwd(), 'input', 'day11.txt')
+    print('part one: ', end='')
+    start_time = perf_counter()
+    universe = read_input(day11_input)
+    solve_part_one(universe)
+    print('solved in:', perf_counter() - start_time)
+    print('part two: ', end='')
+    start_time = perf_counter()
+    universe = read_input(day11_input)
+    solve_part_two(universe)
+    print('solved in:', perf_counter() - start_time)

@@ -11,6 +11,7 @@ append to each list:
 sum the last entry of each list
 '''
 import os
+from time import perf_counter
 
 
 def read_input(file_path: str) -> list[list[int]]:
@@ -92,9 +93,13 @@ def solve_part_two(histories: list[list[int]]):
 def solve():
     print('Day 9:')
     day9_input = os.path.join(os.getcwd(), 'input', 'day9.txt')
-    histories = read_input(day9_input)
     print('part one: ', end='')
-    solve_part_one(histories)
+    start_time = perf_counter()
     histories = read_input(day9_input)
+    solve_part_one(histories)
+    print('solved in:', perf_counter() - start_time)
     print('part two: ', end='')
+    start_time = perf_counter()
+    histories = read_input(day9_input)
     solve_part_two(histories)
+    print('solved in:', perf_counter() - start_time)

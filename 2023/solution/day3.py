@@ -1,5 +1,6 @@
 '''https://adventofcode.com/2023/day/3'''
 import os
+from time import perf_counter
 
 
 def read_input(file_path: str) -> list[str]:
@@ -211,8 +212,13 @@ def solve_part_two(lines: list[str]):
 def solve():
     print('Day 3:')
     day3_input = os.path.join(os.getcwd(), 'input', 'day3.txt')
-    lines = read_input(day3_input)
     print('part one: ', end='')
+    start_time = perf_counter()
+    lines = read_input(day3_input)
     solve_part_one(lines)
+    print('solved in:', perf_counter() - start_time)
     print('part two: ', end='')
+    start_time = perf_counter()
+    lines = read_input(day3_input)
     solve_part_two(lines)
+    print('solved in:', perf_counter() - start_time)

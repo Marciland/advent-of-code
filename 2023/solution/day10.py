@@ -35,6 +35,7 @@ How many steps along the loop does it take to get from the starting position
 to the point farthest from the starting position?
 '''
 import os
+from time import perf_counter
 
 from helpers import Point
 
@@ -220,7 +221,9 @@ def solve_part_one(field: list[list[str]]):
 def solve():
     print('Day 10:')
     day10_input = os.path.join(os.getcwd(), 'input', 'day10.txt')
-    field = read_input(day10_input)
     print('part one: ', end='')
+    start_time = perf_counter()
+    field = read_input(day10_input)
     solve_part_one(field)
+    print('solved in:', perf_counter() - start_time)
     print('part two: WIP')

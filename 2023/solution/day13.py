@@ -34,12 +34,10 @@ import multiprocessing
 import os
 from time import perf_counter
 
-day13_input = os.path.join(os.getcwd(), 'day13.txt')
 
-
-def read_input() -> list[list[list[str]]]:
+def read_input(file_path: str) -> list[list[list[str]]]:
     '''formats the day13.txt'''
-    with open(day13_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = file_handle.readlines()
     delimiter = []
     delimiter.append(-1)
@@ -78,9 +76,8 @@ def find_reflections(pattern: list[list[str]]):
         return columns_left
 
 
-def solve_part_one():
+def solve_part_one(patterns):
     '''solve part one, find reflection for each pattern'''
-    patterns = read_input()
     with multiprocessing.Pool() as pool:
         return sum(pool.map(find_reflections, patterns))
 
@@ -106,9 +103,8 @@ def reflects(pattern, left, right):
     return False
 
 
-def solve_part_two():
+def solve_part_two(patterns):
     '''solve part two, smudge on mirrors'''
-    patterns = read_input()
     with multiprocessing.Pool() as pool:
         return sum(pool.map(find_reflections_smudge, patterns))
 
@@ -170,14 +166,16 @@ def find_reflections_smudge(pattern: list[list[str]]):
                 return 100 * rows_above
 
 
-if __name__ == '__main__':
+def solve():
+    print('Day 13:')
+    day13_input = os.path.join(os.getcwd(), 'input', 'day13.txt')
+    print('part one: ', end='')
     start_time = perf_counter()
-    one_result = solve_part_one()
-    one_time = perf_counter() - start_time
-    print('Result:', one_result)
-    print('Time:', one_time)
+    patterns = read_input(day13_input)
+    solve_part_one(patterns)
+    print('solved in:', perf_counter() - start_time)
+    print('part two: ', end='')
     start_time = perf_counter()
-    two_result = solve_part_two()
-    two_time = perf_counter() - start_time
-    print('Result:', two_result)
-    print('Time:', two_time)
+    patterns = read_input(day13_input)
+    solve_part_two(patterns)
+    print('solved in:', perf_counter() - start_time)

@@ -1,5 +1,6 @@
 '''https://adventofcode.com/2023/day/5'''
 import os
+from time import perf_counter
 
 
 def read_input(file_path: str) -> tuple[list[int], list[list[dict]]]:
@@ -139,9 +140,13 @@ def solve_part_two(seeds_list: list[int], map_list: list[list[tuple[int, int, in
 def solve():
     print('Day 5:')
     day5_input = os.path.join(os.getcwd(), 'input', 'day5.txt')
-    seeds, basic_maps = read_input(day5_input)
     print('part one: ', end='')
+    start_time = perf_counter()
+    seeds, basic_maps = read_input(day5_input)
     solve_part_one(seeds, basic_maps)
-    seeds_list, map_list = read_input_two(day5_input)
+    print('solved in:', perf_counter() - start_time)
     print('part two: ', end='')
+    start_time = perf_counter()
+    seeds_list, map_list = read_input_two(day5_input)
     solve_part_two(seeds_list, map_list)
+    print('solved in:', perf_counter() - start_time)

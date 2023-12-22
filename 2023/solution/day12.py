@@ -11,12 +11,10 @@ import os
 from itertools import product
 from time import perf_counter
 
-day12_input = os.path.join(os.getcwd(), 'day12.txt')
 
-
-def read_input() -> tuple[list[str], list[list[int]]]:
+def read_input(file_path: str) -> tuple[list[str], list[list[int]]]:
     '''formats the day12.txt'''
-    with open(day12_input, 'r', encoding='utf-8') as file_handle:
+    with open(file_path, 'r', encoding='utf-8') as file_handle:
         file_content = [line.strip() for line in file_handle.readlines()]
     springs = [line.split(' ')[0] for line in file_content]
     numbers = [[int(number) for number in line.split(' ')[1].split(',')]
@@ -29,17 +27,6 @@ def is_possible(arrangement: str, numbers: list[int]) -> bool:
     if len(splits) != len(numbers):
         return False
     return all(len(sp) == number for sp, number in zip(splits, numbers))
-
-
-def generate_possibilities(springs: str, numbers: list[int]) -> set:
-    possibilities = set()
-    for arrangement in product('.#', repeat=springs.count('?')):
-        possible_springs = iter(arrangement)
-        new_springs = ''.join(s if s != '?'
-                              else next(possible_springs) for s in springs)
-        if is_possible(new_springs, numbers):
-            possibilities.add(new_springs)
-    return possibilities
 
 
 def generate_possibilities_new(springs: str, numbers: list[int]) -> set:
@@ -57,29 +44,8 @@ def generate_possibilities_new(springs: str, numbers: list[int]) -> set:
     return possibilities
 
 
-def get_possible_arrangements(springs: str, numbers: list[int]) -> int:
-    if '?' in springs:
-        all_possibilities = generate_possibilities(springs, numbers)
-        return sum(1 for _ in all_possibilities)
-    return 1
-
-
-def solve_part_one():
+def solve_part_one_new(springs, numbers):
     '''solve part one, needs the sum of possible arrangements'''
-    springs, numbers = read_input()
-    assert len(springs) == len(numbers)
-    starmap = []
-    for i in range(0, len(springs), 1):
-        starmap.append((springs[i], numbers[i]))
-    with multiprocessing.Pool() as pool:
-        possible_arrangements = pool.starmap(get_possible_arrangements,
-                                             starmap)
-    return sum(possible_arrangements)
-
-
-def solve_part_one_new():
-    '''solve part one, needs the sum of possible arrangements'''
-    springs, numbers = read_input()
     assert len(springs) == len(numbers)
     starmap = []
     for i in range(0, len(springs), 1):
@@ -87,7 +53,7 @@ def solve_part_one_new():
     with multiprocessing.Pool() as pool:
         possible_arrangements = pool.starmap(get_possible_arrangements_new,
                                              starmap)
-    return sum(possible_arrangements)
+    print(sum(possible_arrangements))
 
 
 def fill_obvious_defected(springs: str):
@@ -208,7 +174,6 @@ def get_possible_arrangements_two(springs: str, numbers: list[int]) -> int:
             return 2
     if '?' in springs:
         all_possibilities = generate_possibilities_new(springs, numbers)
-        print('done')
         return sum(1 for _ in all_possibilities)
     return 1
 
@@ -230,17 +195,8 @@ def unfold(springs: list[str], numbers: list[list[int]]):
     return unfolded_springs, unfolded_numbers
 
 
-test_springs = ['???.###']
-test_numbers = [[1, 1, 3]]
-unfolded_test_springs, unfolded_test_numbers = unfold(
-    test_springs, test_numbers)
-assert unfolded_test_springs == ['???.###????.###????.###????.###????.###']
-assert unfolded_test_numbers == [[1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3]]
-
-
-def solve_part_two():
+def solve_part_two(springs, numbers):
     '''solve part two, unfolding: 5 times the original'''
-    springs, numbers = read_input()
     assert len(springs) == len(numbers)
     springs, numbers = unfold(springs, numbers)
     starmap = []
@@ -249,45 +205,19 @@ def solve_part_two():
     with multiprocessing.Pool() as pool:
         possible_arrangements = pool.starmap(get_possible_arrangements_two,
                                              starmap)
-    return sum(possible_arrangements)
+    print(sum(possible_arrangements))
 
 
-def solve_part_two_new():
-    '''solve part two, unfolding: 5 times the original'''
-    springs, numbers = read_input()
-    assert len(springs) == len(numbers)
-    springs, numbers = unfold(springs, numbers)
-    starmap = []
-    for i in range(0, len(springs), 1):
-        starmap.append((springs[i], numbers[i]))
-    with multiprocessing.Pool() as pool:
-        possible_arrangements = pool.starmap(get_possible_arrangements_new,
-                                             starmap)
-    return sum(possible_arrangements)
-
-
-if __name__ == '__main__':
-    start_timer = perf_counter()
-    old = solve_part_one()
-    old_time = perf_counter()-start_timer
-    print('solved part one in:', old_time)
-    start_timer = perf_counter()
-    new = solve_part_one_new()
-    new_time = perf_counter()-start_timer
-    print('solved part one new in:', new_time)
-    print('old == new :', old, '==', new)
-    assert old == new
-    assert old_time > new_time
-    print('saved:', old_time - new_time)
-    start_timer = perf_counter()
-    old_two = solve_part_two()
-    old_two_time = perf_counter()-start_timer
-    print('solved part two in:', old_two_time)
-    start_timer = perf_counter()
-    new_two = solve_part_two_new()
-    new_two_time = perf_counter()-start_timer
-    print('solved part two new in:', new_two_time)
-    print('old_two == new_two :', old_two, '==', new_two)
-    assert old_two == new_two
-    assert old_two_time > new_two_time
-    print('saved:', old_two_time - new_two_time)
+def solve():
+    print('Day 12:')
+    day12_input = os.path.join(os.getcwd(), 'input', 'day12.txt')
+    print('part one: ', end='')
+    start_time = perf_counter()
+    springs, numbers = read_input(day12_input)
+    solve_part_one_new(springs, numbers)
+    print('solved in:', perf_counter() - start_time)
+    print('part two: ', end='')
+    start_time = perf_counter()
+    springs, numbers = read_input(day12_input)
+    solve_part_two(springs, numbers)
+    print('solved in:', perf_counter() - start_time)

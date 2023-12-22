@@ -5,6 +5,7 @@ navigate L or R on the network
 '''
 import multiprocessing
 import os
+from time import perf_counter
 
 
 def read_input(file_path: str) -> tuple[list[str], list[tuple[str, str, str]]]:
@@ -122,8 +123,13 @@ def solve_part_two(list_of_instructions: list[str], list_of_nodes: list[tuple[st
 def solve():
     print('Day 8:')
     day8_input = os.path.join(os.getcwd(), 'input', 'day8.txt')
-    list_of_instructions, list_of_nodes = read_input(day8_input)
     print('part one: ', end='')
+    start_time = perf_counter()
+    list_of_instructions, list_of_nodes = read_input(day8_input)
     solve_part_one(list_of_instructions, list_of_nodes)
+    print('solved in:', perf_counter() - start_time)
     print('part two: ', end='')
+    start_time = perf_counter()
+    list_of_instructions, list_of_nodes = read_input(day8_input)
     solve_part_two(list_of_instructions, list_of_nodes)
+    print('solved in:', perf_counter() - start_time)
