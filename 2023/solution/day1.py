@@ -1,5 +1,5 @@
 '''https://adventofcode.com/2023/day/1'''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -68,7 +68,7 @@ def solve_part_two(text_list: list[str]):
 
 def solve():
     print('Day 1:')
-    day1_input = os.path.join(os.getcwd(), 'input', 'day1.txt')
+    day1_input = join(dirname(dirname(__file__)), 'input', 'day1.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     text_list = read_input(day1_input)

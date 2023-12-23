@@ -1,5 +1,5 @@
 '''https://adventofcode.com/2023/day/2'''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -102,7 +102,7 @@ def solve_part_two(games: dict[int, list[dict]]):
 
 def solve():
     print('Day 2:')
-    day2_input = os.path.join(os.getcwd(), 'input', 'day2.txt')
+    day2_input = join(dirname(dirname(__file__)), 'input', 'day2.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     games = read_input(day2_input)

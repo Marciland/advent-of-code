@@ -1,5 +1,5 @@
 '''https://adventofcode.com/2023/day/14'''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -223,7 +223,7 @@ def find_mult(load: list[int], temp: list[int]):
 
 def solve():
     print('Day 14:')
-    day14_input = os.path.join(os.getcwd(), 'input', 'day14.txt')
+    day14_input = join(dirname(dirname(__file__)), 'input', 'day14.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     cols = read_input(day14_input)

@@ -31,7 +31,7 @@ What number do you get after summarizing all of your notes?
 result: 405 (5 (to the left in first) + 100 * 4(rows above in second))
 '''
 import multiprocessing
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -58,7 +58,7 @@ def read_input(file_path: str) -> list[list[list[str]]]:
 
 
 def find_reflections(pattern: list[list[str]]):
-    '''finds the best reflection match'''
+    '''finds the reflection'''
     joined_rows = []
     for row in pattern:
         joined_rows.append(''.join(row))
@@ -74,12 +74,13 @@ def find_reflections(pattern: list[list[str]]):
     columns_left = find_reflection(joined_cols)
     if columns_left:
         return columns_left
+    return None
 
 
 def solve_part_one(patterns):
     '''solve part one, find reflection for each pattern'''
     with multiprocessing.Pool() as pool:
-        return sum(pool.map(find_reflections, patterns))
+        print(sum(pool.map(find_reflections, patterns)))
 
 
 def find_reflection(pattern, start_index=0):
@@ -87,6 +88,7 @@ def find_reflection(pattern, start_index=0):
     for index in range(start_index, len(pattern) - 1, 1):
         if reflects(pattern, index, index+1):
             return index + 1
+    return None
 
 
 def reflects(pattern, left, right):
@@ -106,7 +108,7 @@ def reflects(pattern, left, right):
 def solve_part_two(patterns):
     '''solve part two, smudge on mirrors'''
     with multiprocessing.Pool() as pool:
-        return sum(pool.map(find_reflections_smudge, patterns))
+        print(sum(pool.map(find_reflections_smudge, patterns)))
 
 
 def find_reflections_smudge(pattern: list[list[str]]):
@@ -164,11 +166,12 @@ def find_reflections_smudge(pattern: list[list[str]]):
                 return columns_left
             if initial_cols == columns_left:
                 return 100 * rows_above
+    return None
 
 
 def solve():
     print('Day 13:')
-    day13_input = os.path.join(os.getcwd(), 'input', 'day13.txt')
+    day13_input = join(dirname(dirname(__file__)), 'input', 'day13.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     patterns = read_input(day13_input)

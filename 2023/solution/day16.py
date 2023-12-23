@@ -1,5 +1,5 @@
 '''https://adventofcode.com/2023/day/16'''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 from helpers import Point
@@ -190,6 +190,7 @@ def solve_part_one(contraption: dict[Point]) -> int:
     current_position = Point(x=0, y=0)
     # sets will not add duplicates
     energized = set()
+    # potential speed up if only saved once, no matter the direction
     splits_taken = []
     energized = run_beam(current_position, current_direction,
                          contraption, energized, splits_taken)
@@ -203,7 +204,7 @@ def solve_part_two():
 
 def solve():
     print('Day 16:')
-    day16_input = os.path.join(os.getcwd(), 'input', 'day16.txt')
+    day16_input = join(dirname(dirname(__file__)), 'input', 'day16.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     contraption = read_input(day16_input)

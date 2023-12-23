@@ -1,5 +1,5 @@
 '''https://adventofcode.com/2023/day/3'''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -26,45 +26,55 @@ def get_numbers_with_index(line: str) -> dict[int, str]:
     return num_with_index
 
 
-def has_symbol(previous_line: str | None, next_line: str | None, current_line: str, start_index: int, number: str) -> bool:
+def has_symbol(previous_line: str | None, next_line: str | None, current_line: str,
+               start_index: int, number: str) -> bool:
     '''checks at index of prev/next/current if any symbol is adjacent'''
     if previous_line:
         if start_index == 0:
             for radius in range(len(number)+1):
-                if previous_line[start_index+radius] != '.' and not previous_line[start_index+radius].isdigit():
+                if previous_line[start_index+radius] != '.' and \
+                        not previous_line[start_index+radius].isdigit():
                     return True
         elif start_index + len(number) == len(current_line):
             for radius in range(-1, len(number)):
-                if previous_line[start_index+radius] != '.' and not previous_line[start_index+radius].isdigit():
+                if previous_line[start_index+radius] != '.' and \
+                        not previous_line[start_index+radius].isdigit():
                     return True
         else:
             for radius in range(-1, len(number)+1):
-                if previous_line[start_index+radius] != '.' and not previous_line[start_index+radius].isdigit():
+                if previous_line[start_index+radius] != '.' and \
+                        not previous_line[start_index+radius].isdigit():
                     return True
     if next_line:
         if start_index == 0:
             for radius in range(len(number)+1):
-                if next_line[start_index+radius] != '.' and not next_line[start_index+radius].isdigit():
+                if next_line[start_index+radius] != '.' and \
+                        not next_line[start_index+radius].isdigit():
                     return True
         elif start_index + len(number) == len(current_line):
             for radius in range(-1, len(number)):
-                if next_line[start_index+radius] != '.' and not next_line[start_index+radius].isdigit():
+                if next_line[start_index+radius] != '.' and \
+                        not next_line[start_index+radius].isdigit():
                     return True
         else:
             for radius in range(-1, len(number)+1):
-                if next_line[start_index+radius] != '.' and not next_line[start_index+radius].isdigit():
+                if next_line[start_index+radius] != '.' and \
+                        not next_line[start_index+radius].isdigit():
                     return True
     if start_index == 0:
         for radius in range(len(number)+1):
-            if current_line[start_index+radius] != '.' and not current_line[start_index+radius].isdigit():
+            if current_line[start_index+radius] != '.' and \
+                    not current_line[start_index+radius].isdigit():
                 return True
     elif start_index + len(number) == len(current_line):
         for radius in range(-1, len(number)):
-            if current_line[start_index+radius] != '.' and not current_line[start_index+radius].isdigit():
+            if current_line[start_index+radius] != '.' and \
+                    not current_line[start_index+radius].isdigit():
                 return True
     else:
         for radius in range(-1, len(number)+1):
-            if current_line[start_index+radius] != '.' and not current_line[start_index+radius].isdigit():
+            if current_line[start_index+radius] != '.' and \
+                    not current_line[start_index+radius].isdigit():
                 return True
     return False
 
@@ -98,7 +108,8 @@ def get_part_numbers(lines: list[str]) -> list[int]:
     return part_numbers
 
 
-def check_asterisk(line_index: int, previous_line: str | None, next_line: str | None, current_line: str, start_index: int, number: str) -> (bool, int, int):
+def check_asterisk(line_index: int, previous_line: str | None, next_line: str | None,
+                   current_line: str, start_index: int, number: str) -> (bool, int, int):
     '''returns match, X, Y'''
     if previous_line:
         if start_index == 0:
@@ -211,7 +222,7 @@ def solve_part_two(lines: list[str]):
 
 def solve():
     print('Day 3:')
-    day3_input = os.path.join(os.getcwd(), 'input', 'day3.txt')
+    day3_input = join(dirname(dirname(__file__)), 'input', 'day3.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     lines = read_input(day3_input)

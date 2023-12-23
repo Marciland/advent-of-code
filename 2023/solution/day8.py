@@ -4,7 +4,7 @@ https://adventofcode.com/2023/day/8
 navigate L or R on the network
 '''
 import multiprocessing
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -75,9 +75,7 @@ def calc_kgv(number1, number2):
     a = number1
     b = number2
     if number1 < number2:
-        temp = number1
-        number1 = number2
-        number2 = temp
+        number1, number2 = number2, number1
     rest = number1 % number2
     while rest != 0:
         number1 = number2
@@ -122,7 +120,7 @@ def solve_part_two(list_of_instructions: list[str], list_of_nodes: list[tuple[st
 
 def solve():
     print('Day 8:')
-    day8_input = os.path.join(os.getcwd(), 'input', 'day8.txt')
+    day8_input = join(dirname(dirname(__file__)), 'input', 'day8.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     list_of_instructions, list_of_nodes = read_input(day8_input)

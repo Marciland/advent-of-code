@@ -7,8 +7,8 @@ nonogram -> contiguous group of damaged
 find sum of possible arrangements
 '''
 import multiprocessing
-import os
 from itertools import product
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -210,7 +210,7 @@ def solve_part_two(springs, numbers):
 
 def solve():
     print('Day 12:')
-    day12_input = os.path.join(os.getcwd(), 'input', 'day12.txt')
+    day12_input = join(dirname(dirname(__file__)), 'input', 'day12.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     springs, numbers = read_input(day12_input)

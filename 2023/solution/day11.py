@@ -22,8 +22,8 @@ between every pair of galaxies.
 What is the sum of these lengths?
 '''
 import copy
-import os
 from itertools import combinations
+from os.path import dirname, join
 from time import perf_counter
 
 from helpers import Galaxy
@@ -151,7 +151,8 @@ def old_get_galaxy_pairs_check(universe: list[list[str]]) -> list[tuple[Galaxy, 
     for first_galaxy in galaxies:
         for second_galaxy in galaxies:
             if not first_galaxy == second_galaxy:
-                if (first_galaxy, second_galaxy) not in galaxy_pairs and (second_galaxy, first_galaxy) not in galaxy_pairs:
+                if (first_galaxy, second_galaxy) not in galaxy_pairs and \
+                        (second_galaxy, first_galaxy) not in galaxy_pairs:
                     galaxy_pairs.append((first_galaxy, second_galaxy))
     return galaxy_pairs
 
@@ -218,7 +219,7 @@ def solve_part_two(universe):
 
 def solve():
     print('Day 11:')
-    day11_input = os.path.join(os.getcwd(), 'input', 'day11.txt')
+    day11_input = join(dirname(dirname(__file__)), 'input', 'day11.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     universe = read_input(day11_input)

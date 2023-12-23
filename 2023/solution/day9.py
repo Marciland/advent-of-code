@@ -10,7 +10,7 @@ append to each list:
     result = value_before + value_below
 sum the last entry of each list
 '''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -92,7 +92,7 @@ def solve_part_two(histories: list[list[int]]):
 
 def solve():
     print('Day 9:')
-    day9_input = os.path.join(os.getcwd(), 'input', 'day9.txt')
+    day9_input = join(dirname(dirname(__file__)), 'input', 'day9.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     histories = read_input(day9_input)

@@ -1,5 +1,5 @@
 '''https://adventofcode.com/2023/day/5'''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -139,7 +139,7 @@ def solve_part_two(seeds_list: list[int], map_list: list[list[tuple[int, int, in
 
 def solve():
     print('Day 5:')
-    day5_input = os.path.join(os.getcwd(), 'input', 'day5.txt')
+    day5_input = join(dirname(dirname(__file__)), 'input', 'day5.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     seeds, basic_maps = read_input(day5_input)

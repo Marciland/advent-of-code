@@ -1,6 +1,6 @@
 '''https://adventofcode.com/2023/day/15'''
-import os
 from multiprocessing import Pool
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -74,7 +74,7 @@ def solve_part_two(strings: list[str]):
 
 def solve():
     print('Day 15:')
-    day15_input = os.path.join(os.getcwd(), 'input', 'day15.txt')
+    day15_input = join(dirname(dirname(__file__)), 'input', 'day15.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     strings = read_input(day15_input)

@@ -3,7 +3,7 @@ https://adventofcode.com/2023/day/7
 
 play camel cards like poker
 '''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 
@@ -350,7 +350,7 @@ def solve_part_two(hands: list[tuple[str, int]]):
 
 def solve():
     print('Day 7:')
-    day7_input = os.path.join(os.getcwd(), 'input', 'day7.txt')
+    day7_input = join(dirname(dirname(__file__)), 'input', 'day7.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     hands = read_input(day7_input)

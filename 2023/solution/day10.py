@@ -34,7 +34,7 @@ Find the single giant loop starting at S.
 How many steps along the loop does it take to get from the starting position
 to the point farthest from the starting position?
 '''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 from helpers import Point
@@ -220,7 +220,7 @@ def solve_part_one(field: list[list[str]]):
 
 def solve():
     print('Day 10:')
-    day10_input = os.path.join(os.getcwd(), 'input', 'day10.txt')
+    day10_input = join(dirname(dirname(__file__)), 'input', 'day10.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     field = read_input(day10_input)

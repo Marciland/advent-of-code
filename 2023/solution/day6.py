@@ -1,5 +1,5 @@
 '''https://adventofcode.com/2023/day/6'''
-import os
+from os.path import dirname, join
 from time import perf_counter
 
 from helpers import get_product
@@ -67,7 +67,7 @@ def solve_part_two(races: list[tuple[int, int]]):
 
 def solve():
     print('Day 6:')
-    day6_input = os.path.join(os.getcwd(), 'input', 'day6.txt')
+    day6_input = join(dirname(dirname(__file__)), 'input', 'day6.txt')
     print('part one: ', end='')
     start_time = perf_counter()
     races = read_input(day6_input)
