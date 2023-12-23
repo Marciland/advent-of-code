@@ -17,11 +17,11 @@ class Galaxy:
     y: int
 
 
-@dataclass(frozen=True, eq=True)
+@dataclass(frozen=True, eq=True, order=True)
 class Point:
     '''2D point'''
-    x: int
     y: int
+    x: int
 
     def add(self, other_point):
         '''x+other.x, y+other.y'''

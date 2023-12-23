@@ -78,64 +78,69 @@ def handle_slash(current_position: Point,
     return None
 
 
-def handle_minus(current_position: Point,
-                 current_direction: Point) -> tuple[Point, Point] | None:
+def handle_minus(current_position: Point, current_direction: Point,
+                 contraption: dict[Point], energized: set[Point],
+                 splits_taken: list) -> tuple[Point, Point, set[Point]] | None:
     '''decide where the beam should move on minus'''
     if current_direction == RIGHT:
         current_position = current_position.add(current_direction)
-        return current_position, current_direction
+        return current_position, current_direction, energized
     if current_direction == LEFT:
         current_position = current_position.add(current_direction)
-        return current_position, current_direction
+        return current_position, current_direction, energized
     if current_direction == UP:
-        handle_split()
-        # WIP what where to send the beam?
-        return current_position, current_direction
+        if (current_position, current_direction) not in splits_taken:
+            splits_taken.append((current_position, current_direction))
+            energized = run_beam(current_position.add(LEFT), LEFT,
+                                 contraption, energized, splits_taken)
+            current_direction = RIGHT
+            current_position = current_position.add(current_direction)
+            return current_position, current_direction, energized
     if current_direction == DOWN:
-        handle_split()
-        # WIP what where to send the beam?
-        return current_position, current_direction
-    return None
+        if (current_position, current_direction) not in splits_taken:
+            splits_taken.append((current_position, current_direction))
+            energized = run_beam(current_position.add(RIGHT), RIGHT,
+                                 contraption, energized, splits_taken)
+            current_direction = LEFT
+            current_position = current_position.add(current_direction)
+            return current_position, current_direction, energized
+    return None, None, energized
 
 
-def handle_pipe(current_position: Point,
-                current_direction: Point) -> tuple[Point, Point] | None:
+def handle_pipe(current_position: Point, current_direction: Point,
+                contraption: dict[Point], energized: set[Point],
+                splits_taken: list) -> tuple[Point, Point, set[Point]] | None:
     '''decide where the beam should move on pipe'''
     if current_direction == RIGHT:
-        handle_split()
-        # WIP what where to send the beam?
-        return current_position, current_direction
+        if (current_position, current_direction) not in splits_taken:
+            splits_taken.append((current_position, current_direction))
+            energized = run_beam(current_position.add(UP), UP,
+                                 contraption, energized, splits_taken)
+            current_direction = DOWN
+            current_position = current_position.add(current_direction)
+            return current_position, current_direction, energized
     if current_direction == LEFT:
-        handle_split()
-        # WIP what where to send the beam?
-        return current_position, current_direction
+        if (current_position, current_direction) not in splits_taken:
+            splits_taken.append((current_position, current_direction))
+            energized = run_beam(current_position.add(DOWN), DOWN,
+                                 contraption, energized, splits_taken)
+            current_direction = UP
+            current_position = current_position.add(current_direction)
+            return current_position, current_direction, energized
     if current_direction == UP:
         current_position = current_position.add(current_direction)
-        return current_position, current_direction
+        return current_position, current_direction, energized
     if current_direction == DOWN:
         current_position = current_position.add(current_direction)
-        return current_position, current_direction
-    return None
+        return current_position, current_direction, energized
+    return None, None, energized
 
 
-def handle_split():
-    # run same logic with another starting point, continue old beam in main?
-    # how to count energized?
-    pass
-
-
-def solve_part_one(contraption: dict[Point]) -> int:
-    '''
-    empty space (.) -> same direction
-    mirrors (/ and \) -> reflected
-    splitters (| and -) -> pointy end of a splitter: like empty space,
-                           flat side of a splitter -> split into two beams
-    A tile is energized if that tile has at least one beam
-    '''
-    current_direction = RIGHT
-    current_position = Point(x=0, y=0)
-    # sets will not count duplicates when sum is used
-    energized = set()
+def run_beam(start_position: Point, start_direction: Point,
+             contraption: dict[Point], energized: set[Point], splits_taken: list) -> set[Point]:
+    '''run a beam through the contraption. save energized points'''
+    current_position = start_position
+    current_direction = start_direction
     while True:
         if beam_ended(current_position, list(contraption)[-1]):
             break
@@ -152,14 +157,43 @@ def solve_part_one(contraption: dict[Point]) -> int:
                                                                current_direction)
             continue
         if contraption[current_position] == '-':
-            current_position, current_direction = handle_minus(current_position,
-                                                               current_direction)
+            current_position, current_direction, energized = handle_minus(current_position,
+                                                                          current_direction,
+                                                                          contraption,
+                                                                          energized,
+                                                                          splits_taken)
+            if current_position is None:
+                break
             continue
         if contraption[current_position] == '|':
-            current_position, current_direction = handle_pipe(current_position,
-                                                              current_direction)
+            current_position, current_direction, energized = handle_pipe(current_position,
+                                                                         current_direction,
+                                                                         contraption,
+                                                                         energized,
+                                                                         splits_taken)
+            if current_position is None:
+                break
             continue
-    print(sum(energized))
+    return energized
+
+
+def solve_part_one(contraption: dict[Point]) -> int:
+    '''
+    empty space (.) -> same direction
+    mirrors (/ and \\) -> reflected
+    splitters (| and -) -> pointy end of a splitter: like empty space,
+                           flat side of a splitter -> split into two beams
+    A tile is energized if that tile has at least one beam
+    '''
+    # start at top left, heading right
+    current_direction = RIGHT
+    current_position = Point(x=0, y=0)
+    # sets will not add duplicates
+    energized = set()
+    splits_taken = []
+    energized = run_beam(current_position, current_direction,
+                         contraption, energized, splits_taken)
+    print(len(energized))
 
 
 def solve_part_two():
