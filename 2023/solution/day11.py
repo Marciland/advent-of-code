@@ -26,7 +26,7 @@ import os
 from itertools import combinations
 from time import perf_counter
 
-from helpers import Point
+from helpers import Galaxy
 
 
 def read_input(file_path: str) -> list[list[str]]:
@@ -115,17 +115,17 @@ def expand_universe(universe: list[list[str]]):
     expand_rows(universe)
 
 
-def get_galaxies(universe: list[list[str]]) -> list[Point]:
+def get_galaxies(universe: list[list[str]]) -> list[Galaxy]:
     '''returns a list of galaxies'''
     galaxies = []
     for y_index in range(0, len(universe), 1):
         for x_index in range(0, len(universe[y_index]), 1):
             if universe[y_index][x_index] == '#':
-                galaxies.append(Point(x=x_index, y=y_index))
+                galaxies.append(Galaxy(x=x_index, y=y_index))
     return galaxies
 
 
-def old_get_galaxy_pairs_add_remove(universe: list[list[str]]) -> list[tuple[Point, Point]]:
+def old_get_galaxy_pairs_add_remove(universe: list[list[str]]) -> list[tuple[Galaxy, Galaxy]]:
     '''returns a list of pairs'''
     galaxies = get_galaxies(universe)
     galaxy_pairs = []
@@ -144,7 +144,7 @@ def old_get_galaxy_pairs_add_remove(universe: list[list[str]]) -> list[tuple[Poi
     return galaxy_pairs
 
 
-def old_get_galaxy_pairs_check(universe: list[list[str]]) -> list[tuple[Point, Point]]:
+def old_get_galaxy_pairs_check(universe: list[list[str]]) -> list[tuple[Galaxy, Galaxy]]:
     '''returns a list of pairs'''
     galaxies = get_galaxies(universe)
     galaxy_pairs = []
@@ -156,13 +156,13 @@ def old_get_galaxy_pairs_check(universe: list[list[str]]) -> list[tuple[Point, P
     return galaxy_pairs
 
 
-def get_galaxy_pairs(galaxies: list[Point]) -> list[tuple[Point, Point]]:
+def get_galaxy_pairs(galaxies: list[Galaxy]) -> list[tuple[Galaxy, Galaxy]]:
     '''returns a list of pairs'''
     # this is why you shouldnt reinvent the wheel
     return list(combinations(galaxies, 2))
 
 
-def get_shortest_path(pair: tuple[Point, Point]):
+def get_shortest_path(pair: tuple[Galaxy, Galaxy]):
     '''returns the shortest path between the given pair'''
     first_point = pair[0]
     second_point = pair[1]

@@ -11,7 +11,18 @@ def get_product(numbers: list[int]) -> int:
 
 
 @dataclass
+class Galaxy:
+    '''2D point'''
+    x: int
+    y: int
+
+
+@dataclass(frozen=True, eq=True)
 class Point:
     '''2D point'''
     x: int
     y: int
+
+    def add(self, other_point):
+        '''x+other.x, y+other.y'''
+        return Point(x=self.x + other_point.x, y=self.y + other_point.y)
