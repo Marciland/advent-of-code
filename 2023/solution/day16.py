@@ -190,24 +190,47 @@ def test_position(contraption: dict[Point], position: tuple[Point, Point]) -> in
     return len(energized)
 
 
-def generate_starmap(contraption: dict[Point]) -> list[tuple]:
+def generate_locations(contraption: dict[Point], start_direction: Point) -> list[tuple]:
     '''generate a list of all possible starting locations and all possible starting directions'''
-    starmap = []
-    possible_directions = [RIGHT, LEFT, UP, DOWN]
+    locations = []
     max_position = list(contraption)[-1]
     # append possible start positions and start directions with the contraption to the starmap
+    # skip unnecessary
     for start_position in contraption:
-        for start_direction in possible_directions:
-            if start_position.x == 0 and start_direction == LEFT:
-                continue
-            if start_position.x == max_position.x and start_direction == RIGHT:
-                continue
-            if start_position.y == 0 and start_direction == UP:
-                continue
-            if start_position.y == max_position.y and start_direction == DOWN:
-                continue
-            starmap.append((contraption, (start_position, start_direction)))
-    return starmap
+        if start_position.x == 0 and start_direction == LEFT:
+            continue
+        if start_position.x == max_position.x and start_direction == RIGHT:
+            continue
+        if start_position.y == 0 and start_direction == UP:
+            continue
+        if start_position.y == max_position.y and start_direction == DOWN:
+            continue
+        point_to_the_left = Point(x=start_position.x-1,
+                                  y=start_position.y)
+        point_to_the_right = Point(x=start_position.x+1,
+                                   y=start_position.y)
+        point_above = Point(x=start_position.x,
+                            y=start_position.y-1)
+        point_below = Point(x=start_position.x,
+                            y=start_position.y+1)
+        if start_direction == RIGHT and \
+            (contraption, (point_to_the_left, RIGHT)) in locations and\
+                contraption[point_to_the_left] in ['.', '-']:
+            continue
+        if start_direction == LEFT and \
+            (contraption, (point_to_the_right, LEFT)) in locations and\
+                contraption[point_to_the_right] in ['.', '-']:
+            continue
+        if start_direction == DOWN and \
+            (contraption, (point_above, DOWN)) in locations and\
+                contraption[point_above] in ['.', '|']:
+            continue
+        if start_direction == UP and \
+            (contraption, (point_below, UP)) in locations and\
+                contraption[point_below] in ['.', '|']:
+            continue
+        locations.append((contraption, (start_position, start_direction)))
+    return locations
 
 
 def solve_part_one(contraption: dict[Point]) -> int:
@@ -231,9 +254,14 @@ def solve_part_one(contraption: dict[Point]) -> int:
 
 def solve_part_two(contraption: dict[Point]):
     '''find beam start position with most energized tiles'''
-    starmap = generate_starmap(contraption)
+    possible_directions = [RIGHT, LEFT, UP, DOWN]
+    starmap = []
+    for start_direction in possible_directions:
+        starmap.append((contraption, start_direction))
     with Pool() as pool:
-        energized = pool.starmap(test_position, starmap)
+        locations = pool.starmap(generate_locations, starmap)
+        locations = [location for ls in locations for location in ls]
+        energized = pool.starmap(test_position, locations)
     print(max(energized))
 
 
