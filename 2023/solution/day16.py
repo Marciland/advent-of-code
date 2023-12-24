@@ -220,7 +220,7 @@ def generate_locations(contraption: dict[Point]) -> list[tuple]:
     return locations
 
 
-def solve_part_one(contraption: dict[Point]) -> int:
+def solve_part_one(contraption: dict[Point]):
     '''
     empty space (.) -> same direction
     mirrors (/ and \\) -> reflected
