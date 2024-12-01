@@ -2,7 +2,7 @@
 name = "bin"
 
 [dependencies]
-day1 = { version = "0.1.0", path = "../day1" }
+day1 = { version = "1.0.0", path = "../day1" }
 day2 = { version = "0.1.0", path = "../day2" }
 day3 = { version = "0.1.0", path = "../day3" }
 day4 = { version = "0.1.0", path = "../day4" }
