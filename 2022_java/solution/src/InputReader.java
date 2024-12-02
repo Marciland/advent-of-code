@@ -7,18 +7,23 @@ import java.util.ArrayList;
 
 public class InputReader {
 
-    public static ArrayList<String> readFile(int day) throws IOException {
-        ArrayList<String> result = new ArrayList();
+    public static ArrayList<String> readFile(int day) {
+        try {
+            ArrayList<String> result = new ArrayList();
 
-        File file = new File("../input/day" + day + ".input");
-        FileReader fr = new FileReader(file);
-        BufferedReader reader = new BufferedReader(fr);
+            File file = new File("../input/day" + day + ".input");
+            FileReader fr = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fr);
 
-        String line;
-        while ((line = reader.readLine()) != null) {
-            result.add(line);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.add(line);
+            }
+
+            return result;
+
+        } catch (IOException ex) {
+            throw new RuntimeException("Input for day " + day + "missing!", ex);
         }
-
-        return result;
     }
 }
