@@ -25,7 +25,7 @@ extern crate day9;
 
 use std::time::Instant;
 
-use day1::{star1, star2};
+use day2::{star1, star2};
 
 fn main() {
     let before = Instant::now();
