@@ -2,7 +2,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        Day day = getDay(4);
+        Day day = getDay(5);
         day.star1();
         day.star2();
     }
@@ -20,6 +20,9 @@ public class Main {
             }
             case 4 -> {
                 return new Day4();
+            }
+            case 5 -> {
+                return new Day5();
             }
             default ->
                 throw new IllegalArgumentException("Invalid day: " + day);
