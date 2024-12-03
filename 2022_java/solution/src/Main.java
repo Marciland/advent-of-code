@@ -1,14 +1,14 @@
 
 public class Main {
 
-    public static void main(String[] args) {
-        Day day = getDay(6);
-        day.star1();
-        day.star2();
-    }
+  public static void main(String[] args) {
+    Day day = getDay(7);
+    day.star1();
+    day.star2();
+  }
 
-    private static Day getDay(int day) {
-        switch (day) {
+  private static Day getDay(int day) {
+    switch (day) {
             case 1 -> {
                 return new Day1();
             }
@@ -26,6 +26,9 @@ public class Main {
             }
             case 6 -> {
                 return new Day6();
+            }
+            case 7 -> {
+                return new Day7();
             }
             default ->
                 throw new IllegalArgumentException("Invalid day: " + day);
