@@ -1,7 +1,3 @@
-extern crate helpers;
-
-use helpers::input_to_string_vector;
-
 fn gather_reports(input: &[String]) -> Vec<Vec<i8>> {
     let mut reports = Vec::with_capacity(input.len());
 
@@ -75,7 +71,7 @@ fn bruteforce_report(report: &[i8]) -> bool {
     false
 }
 
-pub fn star1() {
+pub fn star1(input: &[String]) {
     /*
        Reports are safe if:
            levels all increase or decrease
@@ -83,8 +79,7 @@ pub fn star1() {
 
        collect amount of safe reports
     */
-    let input: Vec<String> = input_to_string_vector(2);
-    let reports = gather_reports(&input);
+    let reports = gather_reports(input);
 
     let mut safe_reports = 0;
     for report in reports {
@@ -96,12 +91,11 @@ pub fn star1() {
     println!("{safe_reports}");
 }
 
-pub fn star2() {
+pub fn star2(input: &[String]) {
     /*
        Same rules, but one level can be removed
     */
-    let input: Vec<String> = input_to_string_vector(2);
-    let reports = gather_reports(&input);
+    let reports = gather_reports(input);
 
     let mut safe_reports = 0;
     for report in reports {

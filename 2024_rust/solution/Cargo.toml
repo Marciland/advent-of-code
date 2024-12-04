@@ -1,5 +1,5 @@
 [workspace]
-members = ["bin", "helpers", "day1", "day2", "day3"]
+members = ["bin", "helpers", "day1", "day2", "day3", "day4"]
 resolver = "2"
 
 [profile.dev]

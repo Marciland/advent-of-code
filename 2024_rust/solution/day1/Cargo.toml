@@ -2,8 +2,5 @@
 name = "day1"
 version = "1.0.0"
 
-[dependencies]
-helpers = { version = "0.1.0", path = "../helpers" }
-
 [lints]
 workspace = true

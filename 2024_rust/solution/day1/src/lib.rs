@@ -1,8 +1,4 @@
-extern crate helpers;
-
-use helpers::input_to_string_vector;
-
-fn split_input(input: Vec<String>) -> (Vec<u32>, Vec<u32>) {
+fn split_input(input: &[String]) -> (Vec<u32>, Vec<u32>) {
     let mut left: Vec<u32> = Vec::with_capacity(input.len());
     let mut right: Vec<u32> = Vec::with_capacity(input.len());
 
@@ -20,7 +16,7 @@ fn split_input(input: Vec<String>) -> (Vec<u32>, Vec<u32>) {
     (left, right)
 }
 
-pub fn star1() {
+pub fn star1(input: &[String]) {
     /*
         Find the total distance between left and right.
         Where both lists have been sorted.
@@ -29,7 +25,6 @@ pub fn star1() {
     */
     let mut total_distance = 0;
 
-    let input: Vec<String> = input_to_string_vector(1);
     let (mut left, mut right) = split_input(input);
     assert_eq!(left.len(), right.len());
 
@@ -48,7 +43,7 @@ pub fn star1() {
     println!("Total distance is: {total_distance}");
 }
 
-pub fn star2() {
+pub fn star2(input: &[String]) {
     /*
        Find the similarity score.
        For each number on the left side, find its number of occurances in the right list.
@@ -56,7 +51,6 @@ pub fn star2() {
     */
     let mut similarity_score = 0;
 
-    let input: Vec<String> = input_to_string_vector(1);
     let (left, right) = split_input(input);
 
     for left_number in left {

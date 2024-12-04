@@ -22,20 +22,24 @@ extern crate day6;
 extern crate day7;
 extern crate day8;
 extern crate day9;
+extern crate helpers;
 
 use std::time::Instant;
 
-use day3::{star1, star2};
+use day4::{star1, star2};
+use helpers::input_to_string_vector;
 
 fn main() {
+    let input: Vec<String> = input_to_string_vector(4);
+
     let before = Instant::now();
-    star1();
+    star1(&input);
     println!(
         "Time to solve part 1: {:?}",
         Instant::now().duration_since(before)
     );
     let before = Instant::now();
-    star2();
+    star2(&input);
     println!(
         "Time to solve part 2: {:?}",
         Instant::now().duration_since(before)

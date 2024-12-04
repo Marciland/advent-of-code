@@ -1,16 +1,11 @@
-extern crate helpers;
 extern crate regex;
-
-use helpers::input_to_string_vector;
-
 use regex::Regex;
 
-pub fn star1() {
+pub fn star1(input: &[String]) {
     /*
         Find mul(number, number)
         sum the multiplications
     */
-    let input: Vec<String> = input_to_string_vector(3);
     let merged_input = input.join("");
     let regex = Regex::new(r"mul\(\d*,\d*\)").unwrap();
 
@@ -32,12 +27,11 @@ pub fn star1() {
     println!("{sum}");
 }
 
-pub fn star2() {
+pub fn star2(input: &[String]) {
     /*
         Same but only if do() was before
         dont() should not be included
     */
-    let input: Vec<String> = input_to_string_vector(3);
     let merged_input = input.join("");
 
     let mut matches = collect_matches(&merged_input);
