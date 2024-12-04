@@ -93,7 +93,7 @@ public class Day3 extends Day {
     }
 
     @Override
-    public void star1() {
+    public void star1(ArrayList<String> input) {
         /*
             Split in half, then find doubles.
 
@@ -109,7 +109,6 @@ public class Day3 extends Day {
                 using unicode and subtracting the fitting values
                 https://en.wikipedia.org/wiki/List_of_Unicode_characters
          */
-        ArrayList<String> input = InputReader.readFile(3);
         Rucksacks rucksacks = new Rucksacks(input);
 
         int summedPriority = 0;
@@ -122,11 +121,10 @@ public class Day3 extends Day {
     }
 
     @Override
-    public void star2() {
+    public void star2(ArrayList<String> input) {
         /*
             find in groups of 3 instead of left and right
          */
-        ArrayList<String> input = InputReader.readFile(3);
         Groups groups = new Groups(input);
 
         int summedPriority = 0;

@@ -114,7 +114,7 @@ public class Day2 extends Day {
     }
 
     @Override
-    public void star1() {
+    public void star1(ArrayList<String> input) {
         /*
             Total score: sum all rounds,
             where a round is:
@@ -132,8 +132,6 @@ public class Day2 extends Day {
 
             first opponent then player
          */
-        ArrayList<String> input = InputReader.readFile(2);
-
         MoveSet moves = new MoveSet(input);
 
         int totalScore = 0;
@@ -146,7 +144,7 @@ public class Day2 extends Day {
     }
 
     @Override
-    public void star2() {
+    public void star2(ArrayList<String> input) {
         /*
             X Lose
             Y Draw
@@ -154,8 +152,6 @@ public class Day2 extends Day {
 
             then select the shape
          */
-        ArrayList<String> input = InputReader.readFile(2);
-
         MoveSet moves = new MoveSet(input);
 
         moves.adjustPlayer();

@@ -191,15 +191,13 @@ public class Day7 extends Day {
     }
 
     @Override
-    public void star1() {
+    public void star1(ArrayList<String> input) {
         /*
           sum of size where dirs size <= 100.000
 
           find directories and push files into them
           filter dirs and calc sum
          */
-        ArrayList<String> input = InputReader.readFile(7);
-
         FileSystem fs = new FileSystem();
 
         parseInputIntoFs(input, fs);
@@ -210,13 +208,12 @@ public class Day7 extends Day {
     }
 
     @Override
-    public void star2() {
+    public void star2(ArrayList<String> input) {
         /*
             Find smallest to delete to free enough space:
             30000000 free needed,
             70000000 total
          */
-        ArrayList<String> input = InputReader.readFile(7);
         FileSystem fs = new FileSystem();
         parseInputIntoFs(input, fs);
 

@@ -23,12 +23,10 @@ public class Day1 extends Day {
     }
 
     @Override
-    public void star1() {
+    public void star1(ArrayList<String> input) {
         /*
             sum calories and find the one with the most
          */
-        ArrayList<String> input = InputReader.readFile(1);
-
         ArrayList<Integer> summedCalories = summedCalories(input);
         Collections.sort(summedCalories);
 
@@ -36,12 +34,10 @@ public class Day1 extends Day {
     }
 
     @Override
-    public void star2() {
+    public void star2(ArrayList<String> input) {
         /*
             Kinda the same, but for the sum of the top3
          */
-        ArrayList<String> input = InputReader.readFile(1);
-
         ArrayList<Integer> summedCalories = summedCalories(input);
         Collections.sort(summedCalories);
 

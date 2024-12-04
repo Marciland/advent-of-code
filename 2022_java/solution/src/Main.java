@@ -1,14 +1,20 @@
 
+import java.util.ArrayList;
+
 public class Main {
 
-  public static void main(String[] args) {
-    Day day = getDay(7);
-    day.star1();
-    day.star2();
-  }
+    public static void main(String[] args) {
+        int n = 8;
 
-  private static Day getDay(int day) {
-    switch (day) {
+        Day day = getDay(n);
+        ArrayList<String> input = InputReader.readFile(n);
+
+        day.star1(input);
+        day.star2(input);
+    }
+
+    private static Day getDay(int day) {
+        switch (day) {
             case 1 -> {
                 return new Day1();
             }
@@ -29,6 +35,9 @@ public class Main {
             }
             case 7 -> {
                 return new Day7();
+            }
+            case 8 -> {
+                return new Day8();
             }
             default ->
                 throw new IllegalArgumentException("Invalid day: " + day);

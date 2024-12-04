@@ -118,7 +118,7 @@ public class Day5 extends Day {
     }
 
     @Override
-    public void star1() {
+    public void star1(ArrayList<String> input) {
         /*
         Rearrange crates based on instructions
 
@@ -126,7 +126,6 @@ public class Day5 extends Day {
         Which crates are on top?
         Solution is a string
          */
-        ArrayList<String> input = InputReader.readFile(5);
         int sep = 0;
         for (int i = 0; i < input.size(); i++) {
             if (input.get(i).isBlank()) {
@@ -151,11 +150,10 @@ public class Day5 extends Day {
     }
 
     @Override
-    public void star2() {
+    public void star2(ArrayList<String> input) {
         /*
             Move amount at once (keep order of moved crates)
          */
-        ArrayList<String> input = InputReader.readFile(5);
         int sep = 0;
         for (int i = 0; i < input.size(); i++) {
             if (input.get(i).isBlank()) {
