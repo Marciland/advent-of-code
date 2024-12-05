@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        int n = 9;
+        int n = 10;
 
         Day day = getDay(n);
         ArrayList<String> input = InputReader.readFile(n);
@@ -41,6 +41,9 @@ public class Main {
             }
             case 9 -> {
                 return new Day9();
+            }
+            case 10 -> {
+                return new Day10();
             }
             default ->
                 throw new IllegalArgumentException("Invalid day: " + day);
