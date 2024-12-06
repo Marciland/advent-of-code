@@ -9,7 +9,7 @@ public class InputReader {
 
     public static ArrayList<String> readFile(int day) {
         try {
-            ArrayList<String> result = new ArrayList();
+            ArrayList<String> result = new ArrayList<String>();
 
             File file = new File("../input/day" + day + ".input");
             FileReader fr = new FileReader(file);
@@ -19,6 +19,8 @@ public class InputReader {
             while ((line = reader.readLine()) != null) {
                 result.add(line);
             }
+
+            reader.close();
 
             return result;
 

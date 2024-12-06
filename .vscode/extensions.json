@@ -1,6 +1,5 @@
 {
   "recommendations": [
-    "oracle.oracle-java",
     "rust-lang.rust-analyzer",
     "tamasfe.even-better-toml",
     "fill-labs.dependi",
@@ -9,6 +8,8 @@
     "seaube.clangformat",
     "vadimcn.vscode-lldb",
     "esbenp.prettier-vscode",
-    "ms-python.python"
+    "ms-python.python",
+    "redhat.java",
+    "vscjava.vscode-java-debug"
   ]
 }

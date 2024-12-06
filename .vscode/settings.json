@@ -4,5 +4,6 @@
   "rust-analyzer.linkedProjects": ["2024_rust\\solution\\Cargo.toml"],
   "files.exclude": {
     "**/Cargo.lock": true
-  }
+  },
+  "java.configuration.updateBuildConfiguration": "automatic"
 }

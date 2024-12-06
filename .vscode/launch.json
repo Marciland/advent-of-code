@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "2022",
+      "request": "launch",
+      "mainClass": "Main",
+      "projectName": "advent-of-code",
+      "cwd": "${workspaceRoot}/2022_java/solution"
+    }
+  ]
+}
