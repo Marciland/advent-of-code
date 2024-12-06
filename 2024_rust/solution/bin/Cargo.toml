@@ -8,7 +8,7 @@ day2 = { version = "1.0.0", path = "../day2" }
 day3 = { version = "1.0.0", path = "../day3" }
 day4 = { version = "1.0.0", path = "../day4" }
 day5 = { version = "1.0.0", path = "../day5" }
-day6 = { version = "0.1.0", path = "../day6" }
+day6 = { version = "1.0.0", path = "../day6" }
 day7 = { version = "0.1.0", path = "../day7" }
 day8 = { version = "0.1.0", path = "../day8" }
 day9 = { version = "0.1.0", path = "../day9" }

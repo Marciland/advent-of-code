@@ -8,6 +8,22 @@
       "mainClass": "Main",
       "projectName": "advent-of-code",
       "cwd": "${workspaceRoot}/2022_java/solution"
+    },
+    {
+      "type": "lldb",
+      "name": "2024",
+      "request": "launch",
+      "program": "${workspaceRoot}/2024_rust/solution/target/debug/bin.exe",
+      "args": [],
+      "cargo": {
+        "args": [
+          "build",
+          "--manifest-path",
+          "${workspaceRoot}/2024_rust/solution/Cargo.toml"
+        ]
+      },
+      "cwd": "${workspaceRoot}/2024_rust/solution",
+      "sourceLanguages": ["rust"]
     }
   ]
 }
