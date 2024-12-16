@@ -1,18 +1,7 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, convert::TryInto};
 
+use helpers::Position;
 use regex::Regex;
-
-#[derive(Hash, PartialEq, Eq)]
-pub struct Position {
-    pub x: usize,
-    pub y: usize,
-}
-
-impl Position {
-    pub fn new(x: usize, y: usize) -> Self {
-        Self { x, y }
-    }
-}
 
 pub struct WordSearch {
     pub width: usize,
@@ -52,10 +41,22 @@ impl WordSearch {
     }
 
     fn is_x_mas(&self, pos: &Position) -> bool {
-        let top_left_pos = Position::new(pos.x - 1, pos.y - 1);
-        let top_right_pos = Position::new(pos.x + 1, pos.y - 1);
-        let bottom_left_pos = Position::new(pos.x - 1, pos.y + 1);
-        let bottom_right_pos = Position::new(pos.x + 1, pos.y + 1);
+        let top_left_pos = Position {
+            x: pos.x - 1,
+            y: pos.y - 1,
+        };
+        let top_right_pos = Position {
+            x: pos.x + 1,
+            y: pos.y - 1,
+        };
+        let bottom_left_pos = Position {
+            x: pos.x - 1,
+            y: pos.y + 1,
+        };
+        let bottom_right_pos = Position {
+            x: pos.x + 1,
+            y: pos.y + 1,
+        };
 
         let top_left_char = *self.data.get(&top_left_pos).unwrap();
         let top_right_char = *self.data.get(&top_right_pos).unwrap();
@@ -69,7 +70,10 @@ impl WordSearch {
     }
 
     fn is_edge(&self, pos: &Position) -> bool {
-        pos.x == 0 || pos.x == self.width - 1 || pos.y == 0 || pos.y == self.height - 1
+        pos.x == 0
+            || pos.x == (self.width - 1).try_into().unwrap()
+            || pos.y == 0
+            || pos.y == (self.height - 1).try_into().unwrap()
     }
 
     pub fn find(&self, target: &str) -> u64 {
@@ -100,7 +104,10 @@ impl WordSearch {
 
     fn get_rising(&self) -> Vec<String> {
         fn construct_diagonal(grid: &WordSearch, x: usize, y: usize, mut result: String) -> String {
-            let Some(position) = grid.data.get(&Position::new(x, y)) else {
+            let Some(position) = grid.data.get(&Position {
+                x: x.try_into().unwrap(),
+                y: y.try_into().unwrap(),
+            }) else {
                 panic!("Trying to find out of bounds");
             };
             result.push(*position);
@@ -141,7 +148,10 @@ impl WordSearch {
 
     fn get_falling(&self) -> Vec<String> {
         fn construct_diagonal(grid: &WordSearch, x: usize, y: usize, mut result: String) -> String {
-            let Some(position) = grid.data.get(&Position::new(x, y)) else {
+            let Some(position) = grid.data.get(&Position {
+                x: x.try_into().unwrap(),
+                y: y.try_into().unwrap(),
+            }) else {
                 panic!("Trying to find out of bounds");
             };
             result.push(*position);
@@ -188,7 +198,10 @@ impl WordSearch {
             let mut line = String::new();
 
             for y in 0..self.height {
-                let Some(char) = self.data.get(&Position::new(x, y)) else {
+                let Some(char) = self.data.get(&Position {
+                    x: x.try_into().unwrap(),
+                    y: y.try_into().unwrap(),
+                }) else {
                     panic!("Trying to find out of bounds");
                 };
 
@@ -208,7 +221,10 @@ impl WordSearch {
             let mut line = String::new();
 
             for x in 0..self.width {
-                let Some(char) = self.data.get(&Position::new(x, y)) else {
+                let Some(char) = self.data.get(&Position {
+                    x: x.try_into().unwrap(),
+                    y: y.try_into().unwrap(),
+                }) else {
                     panic!("Trying to find out of bounds");
                 };
 
@@ -226,7 +242,13 @@ impl WordSearch {
 
         for (y, line) in input.iter().enumerate() {
             for (x, char) in line.chars().enumerate() {
-                data.insert(Position::new(x, y), char);
+                data.insert(
+                    Position {
+                        x: x.try_into().unwrap(),
+                        y: y.try_into().unwrap(),
+                    },
+                    char,
+                );
             }
         }
 

@@ -1,50 +1,8 @@
-use std::convert::TryInto;
+extern crate helpers;
 
-#[derive(Clone)]
-struct Position {
-    pub x: i16,
-    pub y: i16,
-}
+use std::convert::{TryFrom, TryInto};
 
-impl PartialEq for Position {
-    fn eq(&self, other: &Self) -> bool {
-        self.x == other.x && self.y == other.y
-    }
-}
-
-impl Position {
-    pub fn left(&self) -> Position {
-        Position {
-            x: self.x - 1,
-            y: self.y,
-        }
-    }
-
-    pub fn right(&self) -> Position {
-        Position {
-            x: self.x + 1,
-            y: self.y,
-        }
-    }
-
-    pub fn up(&self) -> Position {
-        Position {
-            x: self.x,
-            y: self.y - 1,
-        }
-    }
-
-    pub fn down(&self) -> Position {
-        Position {
-            x: self.x,
-            y: self.y + 1,
-        }
-    }
-
-    pub fn neighbours(&self) -> Vec<Position> {
-        vec![self.left(), self.right(), self.up(), self.down()]
-    }
-}
+use helpers::Position;
 
 struct Garden {
     pub width: usize,
@@ -78,8 +36,7 @@ impl Garden {
     }
 
     fn plant(&self, position: &Position) -> char {
-        #[allow(clippy::cast_sign_loss)]
-        self.map[position.y as usize][position.x as usize]
+        self.map[usize::try_from(position.y).unwrap()][usize::try_from(position.x).unwrap()]
     }
 
     fn find_region(&self, current_position: &Position, plant: char, plants: &mut Vec<Position>) {
@@ -109,10 +66,8 @@ impl Garden {
             return false;
         }
 
-        #[allow(clippy::cast_sign_loss)]
-        let x = position.x as usize;
-        #[allow(clippy::cast_sign_loss)]
-        let y = position.y as usize;
+        let x = usize::try_from(position.x).unwrap();
+        let y = usize::try_from(position.y).unwrap();
 
         x < self.width && y < self.height
     }
