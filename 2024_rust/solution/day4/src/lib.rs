@@ -1,3 +1,4 @@
+extern crate helpers;
 extern crate regex;
 
 mod word_search;

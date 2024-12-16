@@ -1,24 +1,10 @@
+extern crate helpers;
+use helpers::Position;
+
 use std::{
     collections::{HashMap, HashSet},
-    convert::{TryFrom, TryInto},
+    convert::TryInto,
 };
-
-#[derive(Eq, Hash, PartialEq, Clone)]
-struct Position {
-    pub x: i16,
-    pub y: i16,
-}
-
-impl Position {
-    pub fn dif(&self, other_position: &Position) -> Position {
-        #[allow(clippy::cast_possible_wrap)]
-        let x_dif = self.x.abs_diff(other_position.x) as i16;
-        #[allow(clippy::cast_possible_wrap)]
-        let y_dif = self.y.abs_diff(other_position.y) as i16;
-
-        Position { x: x_dif, y: y_dif }
-    }
-}
 
 struct Map {
     pub width: usize,
@@ -106,8 +92,8 @@ fn parse_input(input: &[String]) -> Map {
             }
 
             let antenna_position = Position {
-                x: i16::try_from(x).unwrap(),
-                y: i16::try_from(y).unwrap(),
+                x: x.try_into().unwrap(),
+                y: y.try_into().unwrap(),
             };
 
             if let Some(positions) = antennas.get_mut(&char) {

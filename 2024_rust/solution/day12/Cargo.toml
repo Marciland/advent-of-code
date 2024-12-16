@@ -4,3 +4,6 @@ version = "0.1.0"
 
 [lints]
 workspace = true
+
+[dependencies]
+helpers = { workspace = true }

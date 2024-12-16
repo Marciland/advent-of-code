@@ -2,7 +2,7 @@
 name = "bin"
 
 [dependencies]
-helpers = { version = "0.1.0", path = "../helpers" }
+helpers = { workspace = true }
 day1 = { version = "1.0.0", path = "../day1" }
 day2 = { version = "1.0.0", path = "../day2" }
 day3 = { version = "1.0.0", path = "../day3" }

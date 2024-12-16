@@ -1,44 +1,11 @@
-use std::{convert::TryInto, vec};
+extern crate helpers;
 
-#[derive(Eq, Hash, PartialEq, Clone, Ord, PartialOrd)]
-struct Position {
-    pub x: i16,
-    pub y: i16,
-}
+use std::{
+    convert::{TryFrom, TryInto},
+    vec,
+};
 
-impl Position {
-    pub fn left(&self) -> Position {
-        Position {
-            x: self.x - 1,
-            y: self.y,
-        }
-    }
-
-    pub fn right(&self) -> Position {
-        Position {
-            x: self.x + 1,
-            y: self.y,
-        }
-    }
-
-    pub fn up(&self) -> Position {
-        Position {
-            x: self.x,
-            y: self.y - 1,
-        }
-    }
-
-    pub fn down(&self) -> Position {
-        Position {
-            x: self.x,
-            y: self.y + 1,
-        }
-    }
-
-    pub fn neighbours(&self) -> Vec<Position> {
-        vec![self.left(), self.right(), self.up(), self.down()]
-    }
-}
+use helpers::Position;
 
 struct TopographicMap {
     // x,y
@@ -67,8 +34,8 @@ impl TopographicMap {
     }
 
     fn try(&self, start: &Position, found: &mut Vec<Position>) {
-        #[allow(clippy::cast_sign_loss)]
-        let start_value = self.map[start.x as usize][start.y as usize];
+        let start_value =
+            self.map[usize::try_from(start.x).unwrap()][usize::try_from(start.y).unwrap()];
 
         if start_value == 9 {
             found.push(start.clone());
@@ -81,8 +48,8 @@ impl TopographicMap {
                 continue;
             }
 
-            #[allow(clippy::cast_sign_loss)]
-            let neighbour_value = self.map[neighbour.x as usize][neighbour.y as usize];
+            let neighbour_value = self.map[usize::try_from(neighbour.x).unwrap()]
+                [usize::try_from(neighbour.y).unwrap()];
 
             if start_value + 1 != neighbour_value {
                 continue;

@@ -1,8 +1,6 @@
-#[derive(PartialEq)]
-struct Position {
-    pub x: i16,
-    pub y: i16,
-}
+extern crate helpers;
+
+use helpers::Position;
 
 struct Robot {
     pub pos: Position,
@@ -10,23 +8,23 @@ struct Robot {
 }
 
 impl Robot {
-    pub fn take_step(&mut self, max_width: i16, max_height: i16) {
+    pub fn take_step(&mut self, max_width: u8, max_height: u8) {
         let mut new_x = self.pos.x + self.vel.x;
         if new_x < 0 {
-            new_x += max_width;
+            new_x += i64::from(max_width);
         }
 
-        if new_x >= max_width {
-            new_x -= max_width;
+        if new_x >= max_width.into() {
+            new_x -= i64::from(max_width);
         }
 
         let mut new_y = self.pos.y + self.vel.y;
         if new_y < 0 {
-            new_y += max_height;
+            new_y += i64::from(max_height);
         }
 
-        if new_y >= max_height {
-            new_y -= max_height;
+        if new_y >= max_height.into() {
+            new_y -= i64::from(max_height);
         }
 
         self.pos.x = new_x;
@@ -43,7 +41,7 @@ struct Map {
 impl Map {
     pub fn elapse_time(&mut self) {
         for robot in &mut self.robots {
-            robot.take_step(i16::from(self.width), i16::from(self.height));
+            robot.take_step(self.width, self.height);
         }
     }
 

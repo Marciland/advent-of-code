@@ -13,3 +13,6 @@ perf = "warn"
 style = "warn"
 pedantic = "warn"
 missing_panics_doc = { level = "allow", priority = 1 }
+
+[workspace.dependencies]
+helpers = { version = "0.2.0", path = "../solution/helpers" }

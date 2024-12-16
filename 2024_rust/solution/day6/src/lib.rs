@@ -1,38 +1,7 @@
-use std::convert::TryFrom;
+use std::convert::{TryFrom, TryInto};
 
-#[derive(Clone, PartialEq, Ord, PartialOrd, Eq)]
-struct Position {
-    pub x: i16,
-    pub y: i16,
-}
-
-impl Position {
-    pub fn add(&self, other: &Position) -> Position {
-        Position {
-            x: self.x + other.x,
-            y: self.y + other.y,
-        }
-    }
-}
-
-#[derive(Clone)]
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
-impl Direction {
-    pub fn value(&self) -> Position {
-        match self {
-            Direction::Up => Position { x: 0, y: -1 },
-            Direction::Down => Position { x: 0, y: 1 },
-            Direction::Left => Position { x: -1, y: 0 },
-            Direction::Right => Position { x: 1, y: 0 },
-        }
-    }
-}
+extern crate helpers;
+use helpers::{Direction, Position};
 
 #[derive(Clone)]
 struct Guard {
@@ -82,10 +51,9 @@ impl Guard {
             return true;
         }
 
-        #[allow(clippy::cast_sign_loss)]
-        let x = x as usize;
-        #[allow(clippy::cast_sign_loss)]
-        let y = y as usize;
+        let x = usize::try_from(x).unwrap();
+        let y = usize::try_from(y).unwrap();
+
         x >= lab.width || y >= lab.height
     }
 
@@ -131,13 +99,13 @@ fn parse_input(input: &[String]) -> Lab {
             match char {
                 '^' => {
                     start = Some(Position {
-                        x: i16::try_from(x).unwrap(),
-                        y: i16::try_from(y).unwrap(),
+                        x: x.try_into().unwrap(),
+                        y: y.try_into().unwrap(),
                     });
                 }
                 '#' => obstructions.push(Position {
-                    x: i16::try_from(x).unwrap(),
-                    y: i16::try_from(y).unwrap(),
+                    x: x.try_into().unwrap(),
+                    y: y.try_into().unwrap(),
                 }),
                 _ => (),
             }
@@ -185,8 +153,8 @@ pub fn star2(input: &[String]) {
     for y in 0..lab.height {
         for x in 0..lab.width {
             let pos = Position {
-                x: i16::try_from(x).unwrap(),
-                y: i16::try_from(y).unwrap(),
+                x: x.try_into().unwrap(),
+                y: y.try_into().unwrap(),
             };
 
             if lab.obstructions.contains(&pos) {
