@@ -26,11 +26,11 @@ extern crate helpers;
 
 use std::time::Instant;
 
-use day17::{star1, star2};
+use day18::{star1, star2};
 use helpers::input_to_string_vector;
 
 fn main() {
-    let input: Vec<String> = input_to_string_vector(17);
+    let input: Vec<String> = input_to_string_vector(18);
 
     let before = Instant::now();
     star1(&input);
